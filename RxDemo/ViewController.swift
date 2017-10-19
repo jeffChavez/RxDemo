@@ -21,7 +21,7 @@ class Service {
         return Observable.just(user).delay(1.5, scheduler: MainScheduler.instance)
     }
 
-    func fetchFriends() -> Observable<Int> {
+    func fetchFriends(with user: User) -> Observable<Int> {
         return Observable.just(0)
     }
 }
@@ -35,16 +35,16 @@ class Kitchen {
     private let service = Service()
 
     func viewState() -> Observable<ViewState> {
-        var storedUser: User!
         return service.fetchUser()
-            .flatMap { user -> Observable<Int> in
-                storedUser = user
-                return self.service.fetchFriends()
+            .flatMap { user -> Observable<(User, Int)> in
+                let userObs = Observable.just(user)
+                let fetchFriendsObs = self.service.fetchFriends(with: user)
+                return Observable.zip(userObs, fetchFriendsObs)
             }
-            .flatMap { friendCount -> Observable<ViewState> in
-                let text = "Hello, " + storedUser.name + ". You have \(friendCount) friends"
+            .map { (user, friendCount) -> ViewState in
+                let text = "Hello, " + user.name + ". You have \(friendCount) friends"
                 let viewState = ViewState(labelText: text, showSpinner: false)
-                return Observable.just(viewState)
+                return viewState
             }
             .catchError { e -> Observable<ViewState> in
                 guard let error = e as? AppError else {
