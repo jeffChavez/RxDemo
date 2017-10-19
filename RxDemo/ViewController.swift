@@ -13,12 +13,12 @@ class Service {
     }
 
     func fetchUser() -> Observable<User> {
-        let error = false
+        let error = true
         guard !error else {
             return Observable.error(AppError.badNetwork).delay(1.5, scheduler: MainScheduler.instance)
         }
         let user = User(name: "Jeff")
-        return Observable.just(user).delay(5, scheduler: MainScheduler.instance)
+        return Observable.just(user).delay(1.5, scheduler: MainScheduler.instance)
     }
 
     func fetchFriends() -> Observable<Int> {
@@ -42,7 +42,7 @@ class Kitchen {
                 return self.service.fetchFriends()
             }
             .flatMap { friendCount -> Observable<ViewState> in
-                let text = "Hello, " + storedUser.name + "You have \(friendCount) friends"
+                let text = "Hello, " + storedUser.name + ". You have \(friendCount) friends"
                 let viewState = ViewState(labelText: text, showSpinner: false)
                 return Observable.just(viewState)
             }
