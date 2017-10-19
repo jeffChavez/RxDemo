@@ -13,7 +13,7 @@ class Service {
     }
 
     func fetchUser() -> Observable<User> {
-        let error = true
+        let error = false
         guard !error else {
             return Observable.error(AppError.badNetwork).delay(1.5, scheduler: MainScheduler.instance)
         }
