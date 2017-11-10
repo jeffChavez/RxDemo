@@ -1,0 +1,182 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Differences between imperative and functional programming
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+what is functional programming?
+
+"treats computation as the evaluation of mathematical functions and avoids changing-state and mutable data"
+
+
+
+
+
+
+
+
+
+
+
+
+
+imperative?
+
+"imperative programming uses statements that change a program's state. In the same way natural language expresses commands, an imperative program consists of commands for the computer to perform."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example, baking a cake
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IMPERATIVE
+
+func bakeCake(butter, sugar, eggs, flour) -> Cake {
+  oven.temp = 375
+
+  bowl.add(butter, sugar)
+  bowl.cream()
+  bowl.add(eggs, flour)
+  bowl.mix()
+  pan.add(bowl.contents())
+
+  oven.add(pan)
+  oven.cook(minutes: 20)
+
+  let cake = oven.remove()
+  return cake
+}
+
+// feels natural, reads like a written recipe
+
+
+
+
+
+
+FUNCTIONAL
+
+func bakeCake(butter, sugar, flour, eggs) -> Cake {
+
+  let creamedButter = bowl.cream(butter, sugar)
+  let batter        = bowl.mix(creamedButter, flour, eggs)
+  let panWithBatter = pan.add(batter)
+  let bakedCake     = oven.bake(panWithBatter, minutes: 20, temp: 375)
+
+  return bakedCake
+}
+
+// doesn't correlate to the real world as much, but you can clearly see the dependencies
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+func makeCake(butter, sugar, flour, eggs) -> Cake {
+	return oven.bake(pan.add(bowl.mix(bowl.cream(butter, sugar), flour, eggs)), minutes: 20, temp: 375)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Imperative = mutable state
+
+Functional = immutable state
+
+
+
+
+
+
+
+
+
+
+
+
+Rx is just a tool you can use to handle asynchronous programming in a functional way
+
+LINK: http://www.lihaoyi.com/post/WhatsFunctionalProgrammingAllAbout.html
