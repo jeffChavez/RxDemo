@@ -21,8 +21,8 @@ class Service {
         return Observable.just(user).delay(1.5, scheduler: MainScheduler.instance)
     }
 
-    func fetchFriends(with user: User) -> Observable<Int> {
-        return Observable.just(0)
+    func fetchTasks(for user: User) -> Observable<Int> {
+        return Observable.just(3)
     }
 }
 
@@ -37,27 +37,25 @@ class Kitchen {
     func viewState() -> Observable<ViewState> {
         return service.fetchUser()
             .flatMap { user -> Observable<(User, Int)> in
-                let userObs = Observable.just(user)
-                let fetchFriendsObs = self.service.fetchFriends(with: user)
-                return Observable.zip(userObs, fetchFriendsObs)
+                return Observable.zip(Observable.just(user), self.service.fetchTasks(for: user))
             }
-            .map { (user, friendCount) -> ViewState in
-                let text = "Hello, " + user.name + ". You have \(friendCount) friends"
-                let viewState = ViewState(labelText: text, showSpinner: false)
+            .map { (user, taskCount) -> ViewState in
+                let text = "Hello, " + user.name + ", " + "you have \(taskCount) tasks."
+                let viewState = ViewState(labelText: text)
                 return viewState
             }
             .catchError { e -> Observable<ViewState> in
                 guard let error = e as? AppError else {
                     fatalError("")
                 }
-                let viewState = ViewState(labelText: error.rawValue, showSpinner: false)
+                let viewState = ViewState(labelText: error.rawValue)
                 return Observable.just(viewState)
             }
             .startWith(loadingViewState())
     }
 
     private func loadingViewState() -> ViewState {
-        return ViewState(labelText: "Loading...", showSpinner: true)
+        return ViewState(labelText: "Loading...")
     }
 }
 
@@ -77,12 +75,6 @@ class ViewController: UIViewController {
 
         kitchen.viewState().subscribe(onNext: { viewState in
             self.label.text = viewState.labelText
-            if viewState.showSpinner {
-                MBProgressHUD.showAdded(to: self.view, animated: true)
-            }
-            else {
-                MBProgressHUD.hide(for: self.view, animated: true)
-            }
         }).addDisposableTo(disposeBag)
     }
 

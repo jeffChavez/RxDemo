@@ -6,5 +6,4 @@ struct User {
 
 struct ViewState {
     let labelText: String
-    let showSpinner: Bool
 }
