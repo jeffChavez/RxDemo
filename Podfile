@@ -7,6 +7,7 @@ target 'RxDemo' do
     pod 'MBProgressHUD'
     pod 'RxCocoa'
     pod 'Swinject'
+    pod 'SwinjectStoryboard'
 
     target 'RxDemoTests' do
 

@@ -4,19 +4,23 @@ PODS:
     - RxSwift (~> 3.6)
   - RxSwift (3.6.1)
   - Swinject (2.1.1)
+  - SwinjectStoryboard (1.1.2):
+    - Swinject (~> 2.1)
 
 DEPENDENCIES:
   - MBProgressHUD
   - RxCocoa
   - RxSwift
   - Swinject
+  - SwinjectStoryboard
 
 SPEC CHECKSUMS:
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   RxCocoa: 84a08739ab186248c7f31ce4ee92d6f8a947d690
   RxSwift: f9de85ea20cd2f7716ee5409fc13523dc638e4e4
   Swinject: afea49fd95f392b41171669f165842879c48fad6
+  SwinjectStoryboard: 92e75763c3299cdf627bef98a5180dc894864336
 
-PODFILE CHECKSUM: 70c5fad36d7b280e4b7ef5e37b782e278c73a529
+PODFILE CHECKSUM: cdadb235307c4d16e10e7dae5d5509a5de3cddf6
 
 COCOAPODS: 1.1.1

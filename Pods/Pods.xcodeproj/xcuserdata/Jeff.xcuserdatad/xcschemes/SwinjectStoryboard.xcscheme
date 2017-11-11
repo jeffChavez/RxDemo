@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '91577376242CD74328E7188F705D88B0'
-               BlueprintName = 'RxCocoa'
+               BlueprintIdentifier = 'A64342B4C8007CCDC021C9B2C65568A9'
+               BlueprintName = 'SwinjectStoryboard'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'RxCocoa.framework'>
+               BuildableName = 'SwinjectStoryboard.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

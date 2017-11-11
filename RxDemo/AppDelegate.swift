@@ -7,15 +7,24 @@
 //
 
 import UIKit
+import Swinject
+import SwinjectStoryboard
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    private let assembler: Assembler
+
+    override init() {
+        let mainAssembly = MainAssembly()
+        let assemblies = [
+            mainAssembly
+        ]
+        self.assembler = Assembler(assemblies, container: SwinjectStoryboard.defaultContainer)
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
-        
         return true
     }
 
