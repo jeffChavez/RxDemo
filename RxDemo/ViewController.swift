@@ -59,7 +59,6 @@ class Kitchen {
             .startWith(FooterViewState.loading())
     }
 
-
 }
 
 class ViewController: UIViewController {
