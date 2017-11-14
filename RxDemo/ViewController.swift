@@ -1,24 +1,33 @@
 import UIKit
 import RxSwift
+import RxCocoa
 import MBProgressHUD
+
+// MARK: - Service
 
 class Service {
 
-    private let sharedDocument = PublishSubject<Document>()
+    private let tasksSubject = PublishSubject<[Task]>()
+    private var tasksArray = [Task]()
 
-    func document() -> Observable<Document> {
-        return sharedDocument.asObservable().delay(1.5, scheduler: MainScheduler.instance)
+    func fetchTasks() {
+        tasksSubject.onNext(tasksArray)
     }
 
-    func fetchDocument() {
-        let header = Header(text: "Header")
-        let body = Body(text: "Body")
-        let footer = Footer(text: "Footer")
-        let document = Document(header: header, body: body, footer: footer)
-        sharedDocument.onNext(document)
+    func tasks() -> Observable<[Task]> {
+        return tasksSubject.asObservable().delay(1.5, scheduler: MainScheduler.instance)
+    }
+
+    func createTask() -> Observable<Void> {
+        let newTask = Task(name: "New Task")
+        tasksArray.append(newTask)
+        tasksSubject.onNext(tasksArray)
+        return Observable.just(Void()).delay(1.5, scheduler: MainScheduler.instance)
     }
 
 }
+
+// MARK: - Kitchen
 
 class Kitchen {
 
@@ -28,38 +37,43 @@ class Kitchen {
         self.service = service
     }
 
-    func fetchDocument() {
-        service.fetchDocument()
+    func fetchTasks() {
+        service.fetchTasks()
     }
 
     func headerViewState() -> Observable<HeaderViewState> {
-        return service.document()
-            .map { (document) -> HeaderViewState in
-                let viewState = HeaderViewState(labelText: "This is the \(document.header.text)")
-                return viewState
-            }
-            .startWith(HeaderViewState.loading())
+        let viewState = HeaderViewState(labelText: "To Do List")
+        return Observable.just(viewState)
     }
 
     func bodyViewState() -> Observable<BodyViewState> {
-        return service.document()
-            .map { (document) -> BodyViewState in
-                let viewState = BodyViewState(labelText: "This is the \(document.body.text)")
+        return service.tasks()
+            .map { tasks -> BodyViewState in
+                if tasks.count == 0 {
+                    return BodyViewState.empty()
+                }
+                let viewState = BodyViewState(labelText: "You have \(tasks.count) tasks.")
                 return viewState
             }
             .startWith(BodyViewState.loading())
     }
 
+    func initialFooterViewState() -> Observable<FooterViewState> {
+        return Observable.just(FooterViewState.initial())
+    }
+
     func footerViewState() -> Observable<FooterViewState> {
-        return service.document()
-            .map { (document) -> FooterViewState in
-                let viewState = FooterViewState(labelText: "This is the \(document.footer.text)")
+        return service.createTask()
+            .map { _ -> FooterViewState in
+                let viewState = FooterViewState(buttonText: "Task Added!", isEnabled: true)
                 return viewState
             }
             .startWith(FooterViewState.loading())
     }
 
 }
+
+// MARK: - ViewController
 
 class ViewController: UIViewController {
 
@@ -86,15 +100,17 @@ class ViewController: UIViewController {
         containerStackView.addArrangedSubview(headerVC.view)
         containerStackView.addArrangedSubview(bodyVC.view)
         containerStackView.addArrangedSubview(footerVC.view)
-        
+
         headerVC.didMove(toParentViewController: self)
         bodyVC.didMove(toParentViewController: self)
         footerVC.didMove(toParentViewController: self)
 
-        kitchen.fetchDocument()
+        kitchen.fetchTasks()
     }
 
 }
+
+// MARK: - Subviews
 
 class HeaderVC: UIViewController {
 
@@ -114,7 +130,6 @@ class HeaderVC: UIViewController {
             self.label.text = viewState.labelText
         }).disposed(by: disposeBag)
     }
-
 }
 
 class BodyVC: UIViewController {
@@ -139,7 +154,7 @@ class BodyVC: UIViewController {
 
 class FooterVC: UIViewController {
 
-    @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var button: UIButton!
     
     private var kitchen: Kitchen!
     private let disposeBag = DisposeBag()
@@ -151,8 +166,21 @@ class FooterVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        kitchen.footerViewState().subscribe(onNext: { viewState in
-            self.label.text = viewState.labelText
-        }).disposed(by: disposeBag)
+        kitchen.initialFooterViewState()
+            .subscribe(onNext: { viewState in
+                self.button.setTitle(viewState.buttonText, for: .normal)
+                self.button.isEnabled = viewState.isEnabled
+            })
+            .disposed(by: disposeBag)
+
+        button.rx.tap
+            .flatMap { _ -> Observable<FooterViewState> in
+                return self.kitchen.footerViewState()
+            }
+            .subscribe(onNext: { viewState in
+                self.button.setTitle(viewState.buttonText, for: .normal)
+                self.button.isEnabled = viewState.isEnabled
+            })
+            .disposed(by: disposeBag)
     }
 }

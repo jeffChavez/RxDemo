@@ -68,7 +68,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7Qb-3G-s2r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1238" y="-137"/>
+            <point key="canvasLocation" x="1238" y="-200"/>
         </scene>
         <!--BodyVC-->
         <scene sceneID="kjI-Ku-yFe">
@@ -99,7 +99,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D0D-XH-Rdg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1238" y="58"/>
+            <point key="canvasLocation" x="1238" y="32"/>
         </scene>
         <!--FooterVC-->
         <scene sceneID="idK-x6-aK6">
@@ -109,28 +109,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s2r-6T-jiB">
-                                <rect key="frame" x="166" y="65" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNL-C3-hwl">
+                                <rect key="frame" x="16" y="60" width="343" height="30"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="s2r-6T-jiB" firstAttribute="centerX" secondItem="KM7-nh-Cns" secondAttribute="centerX" id="5rn-M8-9T6"/>
-                            <constraint firstItem="s2r-6T-jiB" firstAttribute="centerY" secondItem="KM7-nh-Cns" secondAttribute="centerY" id="uP1-PS-pBj"/>
+                            <constraint firstItem="KNL-C3-hwl" firstAttribute="leading" secondItem="KM7-nh-Cns" secondAttribute="leading" constant="16" id="o9J-X8-xN1"/>
+                            <constraint firstItem="KM7-nh-Cns" firstAttribute="trailing" secondItem="KNL-C3-hwl" secondAttribute="trailing" constant="16" id="oFt-uq-vAj"/>
+                            <constraint firstItem="KNL-C3-hwl" firstAttribute="centerY" secondItem="KM7-nh-Cns" secondAttribute="centerY" id="uZ5-gu-GHF"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="KM7-nh-Cns"/>
                     </view>
                     <size key="freeformSize" width="375" height="150"/>
                     <connections>
-                        <outlet property="label" destination="s2r-6T-jiB" id="0UP-hh-hHg"/>
+                        <outlet property="button" destination="KNL-C3-hwl" id="7Qu-2t-SPJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xOO-cq-TST" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1238" y="250"/>
+            <point key="canvasLocation" x="1238" y="265"/>
         </scene>
     </scenes>
 </document>

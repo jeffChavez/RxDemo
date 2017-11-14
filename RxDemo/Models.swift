@@ -1,33 +1,19 @@
 import Foundation
 
-struct Document {
-    let header: Header
-    let body: Body
-    let footer: Footer
-}
-
-struct Header {
-    let text: String
-}
-
-struct Body {
-    let text: String
-}
-
-struct Footer {
-    let text: String
+struct Task {
+    let name: String
 }
 
 struct HeaderViewState {
     let labelText: String
-
-    static func loading() -> HeaderViewState {
-        return HeaderViewState(labelText: "Loading...")
-    }
 }
 
 struct BodyViewState {
     let labelText: String
+
+    static func empty() -> BodyViewState {
+        return BodyViewState(labelText: "Tap button below to add a task!")
+    }
 
     static func loading() -> BodyViewState {
         return BodyViewState(labelText: "Loading...")
@@ -35,9 +21,14 @@ struct BodyViewState {
 }
 
 struct FooterViewState {
-    let labelText: String
+    let buttonText: String
+    let isEnabled: Bool
+
+    static func initial() -> FooterViewState {
+        return FooterViewState(buttonText: "Add Task", isEnabled: true)
+    }
 
     static func loading() -> FooterViewState {
-        return FooterViewState(labelText: "Loading...")
+        return FooterViewState(buttonText: "Adding...", isEnabled: false)
     }
 }
