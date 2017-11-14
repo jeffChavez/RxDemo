@@ -166,12 +166,10 @@ class FooterVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        kitchen.initialFooterViewState()
-            .subscribe(onNext: { viewState in
-                self.button.setTitle(viewState.buttonText, for: .normal)
-                self.button.isEnabled = viewState.isEnabled
-            })
-            .disposed(by: disposeBag)
+        kitchen.initialFooterViewState().subscribe(onNext: { viewState in
+            self.button.setTitle(viewState.buttonText, for: .normal)
+            self.button.isEnabled = viewState.isEnabled
+        }).disposed(by: disposeBag)
 
         button.rx.tap
             .flatMap { _ -> Observable<FooterViewState> in
@@ -180,7 +178,6 @@ class FooterVC: UIViewController {
             .subscribe(onNext: { viewState in
                 self.button.setTitle(viewState.buttonText, for: .normal)
                 self.button.isEnabled = viewState.isEnabled
-            })
-            .disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
     }
 }
