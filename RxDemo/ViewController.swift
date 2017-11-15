@@ -4,18 +4,18 @@ import MBProgressHUD
 
 class Service {
 
-    private let sharedDocument = PublishSubject<Document>()
-
-    func document() -> Observable<Document> {
-        return sharedDocument.asObservable().delay(1.5, scheduler: MainScheduler.instance)
-    }
+    private let documentSubject = PublishSubject<Document>()
 
     func fetchDocument() {
         let header = Header(text: "Header")
         let body = Body(text: "Body")
         let footer = Footer(text: "Footer")
         let document = Document(header: header, body: body, footer: footer)
-        sharedDocument.onNext(document)
+        return documentSubject.onNext(document)
+    }
+
+    func document() -> Observable<Document> {
+        return documentSubject.asObservable().delay(1.5, scheduler: MainScheduler.instance)
     }
 
 }
@@ -34,7 +34,7 @@ class Kitchen {
 
     func headerViewState() -> Observable<HeaderViewState> {
         return service.document()
-            .map { (document) -> HeaderViewState in
+            .map { document -> HeaderViewState in
                 let viewState = HeaderViewState(labelText: "This is the \(document.header.text)")
                 return viewState
             }
@@ -43,7 +43,7 @@ class Kitchen {
 
     func bodyViewState() -> Observable<BodyViewState> {
         return service.document()
-            .map { (document) -> BodyViewState in
+            .map { document -> BodyViewState in
                 let viewState = BodyViewState(labelText: "This is the \(document.body.text)")
                 return viewState
             }
@@ -52,7 +52,7 @@ class Kitchen {
 
     func footerViewState() -> Observable<FooterViewState> {
         return service.document()
-            .map { (document) -> FooterViewState in
+            .map { document -> FooterViewState in
                 let viewState = FooterViewState(labelText: "This is the \(document.footer.text)")
                 return viewState
             }
@@ -86,10 +86,6 @@ class ViewController: UIViewController {
         containerStackView.addArrangedSubview(headerVC.view)
         containerStackView.addArrangedSubview(bodyVC.view)
         containerStackView.addArrangedSubview(footerVC.view)
-        
-        headerVC.didMove(toParentViewController: self)
-        bodyVC.didMove(toParentViewController: self)
-        footerVC.didMove(toParentViewController: self)
 
         kitchen.fetchDocument()
     }
@@ -140,7 +136,7 @@ class BodyVC: UIViewController {
 class FooterVC: UIViewController {
 
     @IBOutlet private weak var label: UILabel!
-    
+
     private var kitchen: Kitchen!
     private let disposeBag = DisposeBag()
 

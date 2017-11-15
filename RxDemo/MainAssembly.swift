@@ -40,6 +40,7 @@ class MainAssembly: Assembly {
             let kitchen = resolver.resolve(Kitchen.self)!
             vc.inject(kitchen: kitchen)
         }
+
     }
 
 }
