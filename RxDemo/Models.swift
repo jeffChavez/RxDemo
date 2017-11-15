@@ -3,7 +3,6 @@ import Foundation
 struct Document {
     let header: Header
     let body: Body
-    let footer: Footer
 }
 
 struct Header {
@@ -11,10 +10,6 @@ struct Header {
 }
 
 struct Body {
-    let text: String
-}
-
-struct Footer {
     let text: String
 }
 
@@ -31,13 +26,5 @@ struct BodyViewState {
 
     static func loading() -> BodyViewState {
         return BodyViewState(labelText: "Loading...")
-    }
-}
-
-struct FooterViewState {
-    let labelText: String
-
-    static func loading() -> FooterViewState {
-        return FooterViewState(labelText: "Loading...")
     }
 }
