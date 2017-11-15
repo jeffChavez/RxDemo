@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F1A04F41FBB9FFB0023CB81 /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */; };
 		1F29E5761F95B10100256AC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F29E5751F95B10100256AC8 /* AppDelegate.swift */; };
 		1F29E5781F95B10100256AC8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F29E5771F95B10100256AC8 /* ViewController.swift */; };
 		1F29E57B1F95B10100256AC8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F29E5791F95B10100256AC8 /* Main.storyboard */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		059759302C0061568AB39B74 /* Pods-RxDemo-RxDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxDemo-RxDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxDemo-RxDemoTests/Pods-RxDemo-RxDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
 		1F29E5721F95B10100256AC8 /* RxDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F29E5751F95B10100256AC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1F29E5771F95B10100256AC8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				1F882EF21F986C6F003771A6 /* Models.swift */,
 				1F29E5791F95B10100256AC8 /* Main.storyboard */,
 				1F3D98361FB656670009B7CD /* UIView+Constaints.swift */,
+				1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */,
 				1F29E57C1F95B10100256AC8 /* Assets.xcassets */,
 				1F29E57E1F95B10100256AC8 /* LaunchScreen.storyboard */,
 				1F29E5811F95B10100256AC8 /* Info.plist */,
@@ -414,6 +417,7 @@
 				1F3D98371FB656670009B7CD /* UIView+Constaints.swift in Sources */,
 				1F29E5781F95B10100256AC8 /* ViewController.swift in Sources */,
 				1F29E5761F95B10100256AC8 /* AppDelegate.swift in Sources */,
+				1F1A04F41FBB9FFB0023CB81 /* UIColor+AppColors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

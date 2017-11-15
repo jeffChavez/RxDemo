@@ -1,6 +1,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxGesture
 import MBProgressHUD
 
 // MARK: - Service
@@ -49,11 +50,14 @@ class Kitchen {
     func bodyViewState() -> Observable<BodyViewState> {
         return service.tasks()
             .map { tasks -> BodyViewState in
-                if tasks.count == 0 {
+                switch tasks.count {
+                case 0:
                     return BodyViewState.empty()
+                case 1:
+                    return BodyViewState(labelText: "You have 1 task")
+                default:
+                    return BodyViewState(labelText: "You have \(tasks.count) tasks.")
                 }
-                let viewState = BodyViewState(labelText: "You have \(tasks.count) tasks.")
-                return viewState
             }
             .startWith(BodyViewState.loading())
     }
@@ -71,6 +75,16 @@ class Kitchen {
             .startWith(FooterViewState.loading())
     }
 
+    func bannerViewState() -> Observable<BannerViewState> {
+        return service.tasks()
+            .skip(1)
+            .map { tasks -> BannerViewState in
+                let viewState = BannerViewState(title: "Success", message: "You have added a new task!", state: .success)
+                return viewState
+            }
+            .startWith(BannerViewState.empty())
+    }
+
 }
 
 // MARK: - ViewController
@@ -83,14 +97,16 @@ class ViewController: UIViewController {
     private var headerVC: HeaderVC!
     private var bodyVC: BodyVC!
     private var footerVC: FooterVC!
+    private var bannerVC: BannerVC!
 
     private let disposeBag = DisposeBag()
 
-    func inject(kitchen: Kitchen, headerVC: HeaderVC, bodyVC: BodyVC, footerVC: FooterVC) {
+    func inject(kitchen: Kitchen, headerVC: HeaderVC, bodyVC: BodyVC, footerVC: FooterVC, bannerVC: BannerVC) {
         self.kitchen = kitchen
         self.headerVC = headerVC
         self.bodyVC = bodyVC
         self.footerVC = footerVC
+        self.bannerVC = bannerVC
     }
 
     override func viewDidLoad() {
@@ -101,9 +117,16 @@ class ViewController: UIViewController {
         containerStackView.addArrangedSubview(bodyVC.view)
         containerStackView.addArrangedSubview(footerVC.view)
 
-        headerVC.didMove(toParentViewController: self)
-        bodyVC.didMove(toParentViewController: self)
-        footerVC.didMove(toParentViewController: self)
+        kitchen.bannerViewState().subscribe(onNext: { viewState in
+            if viewState.state == .success {
+                self.containerStackView.insertArrangedSubview(self.bannerVC.view, at: 0)
+            }
+        }).disposed(by: disposeBag)
+
+        bannerVC.view.rx.tapGesture().when(.recognized).subscribe(onNext: { _ in
+            self.containerStackView.removeArrangedSubview(self.bannerVC.view)
+            self.bannerVC.view.removeFromSuperview()
+        }).disposed(by: disposeBag)
 
         kitchen.fetchTasks()
     }
@@ -178,6 +201,40 @@ class FooterVC: UIViewController {
             .subscribe(onNext: { viewState in
                 self.button.setTitle(viewState.buttonText, for: .normal)
                 self.button.isEnabled = viewState.isEnabled
-            }).disposed(by: disposeBag)
+            })
+            .disposed(by: disposeBag)
+    }
+}
+
+class BannerVC: UIViewController {
+
+    @IBOutlet private weak var titleLabel: UILabel! { didSet {
+        titleLabel.textColor = .white
+    }}
+
+    @IBOutlet private weak var messageLabel: UILabel! { didSet {
+        messageLabel.textColor = .white
+    }}
+
+    private var kitchen: Kitchen!
+    private let disposeBag = DisposeBag()
+
+    func inject(kitchen: Kitchen) {
+        self.kitchen = kitchen
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        kitchen.bannerViewState().subscribe(onNext: { viewState in
+            self.titleLabel.text = viewState.title
+            self.messageLabel.text = viewState.message
+            switch viewState.state {
+            case .empty:
+                self.view.backgroundColor = .white
+            case .success:
+                self.view.backgroundColor = .softGreen()
+            }
+        }).disposed(by: disposeBag)
     }
 }

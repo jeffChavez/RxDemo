@@ -23,7 +23,8 @@ class MainAssembly: Assembly {
             let headerVC = self.storyboard.instantiateViewController(withIdentifier: "HeaderVC") as! HeaderVC
             let bodyVC = self.storyboard.instantiateViewController(withIdentifier: "BodyVC") as! BodyVC
             let footerVC = self.storyboard.instantiateViewController(withIdentifier: "FooterVC") as! FooterVC
-            vc.inject(kitchen: kitchen, headerVC: headerVC, bodyVC: bodyVC, footerVC: footerVC)
+            let bannerVC = self.storyboard.instantiateViewController(withIdentifier: "BannerVC") as! BannerVC
+            vc.inject(kitchen: kitchen, headerVC: headerVC, bodyVC: bodyVC, footerVC: footerVC, bannerVC: bannerVC)
         }
 
         container.storyboardInitCompleted(HeaderVC.self) { (resolver, vc) in
@@ -37,6 +38,11 @@ class MainAssembly: Assembly {
         }
 
         container.storyboardInitCompleted(FooterVC.self) { (resolver, vc) in
+            let kitchen = resolver.resolve(Kitchen.self)!
+            vc.inject(kitchen: kitchen)
+        }
+
+        container.storyboardInitCompleted(BannerVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
             vc.inject(kitchen: kitchen)
         }
