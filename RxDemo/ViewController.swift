@@ -16,14 +16,14 @@ class Service {
     }
 
     func tasks() -> Observable<[Task]> {
-        return tasksSubject.asObservable().delay(1.5, scheduler: MainScheduler.instance)
+        return tasksSubject.asObservable().delay(2.5, scheduler: MainScheduler.instance)
     }
 
     func createTask() -> Observable<Void> {
         let newTask = Task(name: "New Task")
         tasksArray.append(newTask)
         tasksSubject.onNext(tasksArray)
-        return Observable.just(Void()).delay(1.5, scheduler: MainScheduler.instance)
+        return Observable.just(Void()).delay(2.5, scheduler: MainScheduler.instance)
     }
 
 }
