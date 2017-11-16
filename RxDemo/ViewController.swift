@@ -16,14 +16,14 @@ class Service {
     }
 
     func tasks() -> Observable<[Task]> {
-        return tasksSubject.asObservable().delay(2.5, scheduler: MainScheduler.instance)
+        return tasksSubject.asObservable().delay(1.5, scheduler: MainScheduler.instance)
     }
 
     func createTask() -> Observable<Void> {
         let newTask = Task(name: "New Task")
         tasksArray.append(newTask)
         tasksSubject.onNext(tasksArray)
-        return Observable.just(Void()).delay(2.5, scheduler: MainScheduler.instance)
+        return Observable.just(Void()).delay(1.5, scheduler: MainScheduler.instance)
     }
 
 }
@@ -54,9 +54,9 @@ class Kitchen {
                 case 0:
                     return BodyViewState.empty()
                 case 1:
-                    return BodyViewState(labelText: "You have 1 task")
+                    return BodyViewState(labelText: "You have 1 task", isEnabled: true)
                 default:
-                    return BodyViewState(labelText: "You have \(tasks.count) tasks.")
+                    return BodyViewState(labelText: "You have \(tasks.count) tasks.", isEnabled: true)
                 }
             }
             .startWith(BodyViewState.loading())
@@ -100,6 +100,9 @@ class ViewController: UIViewController {
 
     private let disposeBag = DisposeBag()
 
+    private var bannerTopConstraint: NSLayoutConstraint?
+    private var bannerBottomConstraint: NSLayoutConstraint?
+
     func inject(kitchen: Kitchen, headerVC: HeaderVC, bodyVC: BodyVC, footerVC: FooterVC, bannerVC: BannerVC) {
         self.kitchen = kitchen
         self.headerVC = headerVC
@@ -115,19 +118,44 @@ class ViewController: UIViewController {
         containerStackView.addArrangedSubview(headerVC.view)
         containerStackView.addArrangedSubview(bodyVC.view)
         containerStackView.addArrangedSubview(footerVC.view)
+        setupBannerVC()
 
         kitchen.bannerViewState().subscribe(onNext: { viewState in
             if viewState.state == .success {
-                self.containerStackView.insertArrangedSubview(self.bannerVC.view, at: 0)
+                self.bannerBottomConstraint?.isActive = false
+                self.bannerTopConstraint?.isActive = true
+                UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseInOut, animations: {
+                    self.view.layoutIfNeeded()
+                })
             }
         }).disposed(by: disposeBag)
 
         bannerVC.view.rx.tapGesture().when(.recognized).subscribe(onNext: { _ in
-            self.containerStackView.removeArrangedSubview(self.bannerVC.view)
-            self.bannerVC.view.removeFromSuperview()
+            self.bannerBottomConstraint?.isActive = true
+            self.bannerTopConstraint?.isActive = false
+            UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseInOut, animations: {
+                self.view.layoutIfNeeded()
+            })
         }).disposed(by: disposeBag)
 
         kitchen.fetchTasks()
+    }
+
+    private func setupBannerVC() {
+        view.addSubview(bannerVC.view)
+        bannerVC.view.translatesAutoresizingMaskIntoConstraints = false
+        bannerVC.view.isHidden = false
+        bannerVC.view.constrainLeading(to: view)
+        bannerVC.view.constrainTrailing(to: view)
+        bannerVC.view.constrainHeight(constant: 100)
+
+        let bottomConstraint = self.bannerVC.view.bottomAnchor.constraint(equalTo: self.view.topAnchor)
+        bottomConstraint.isActive = true
+        self.bannerBottomConstraint = bottomConstraint
+
+        let topConstraint = self.bannerVC.view.topAnchor.constraint(equalTo: self.view.topAnchor)
+        topConstraint.isActive = false
+        self.bannerTopConstraint = topConstraint
     }
 
 }
@@ -170,6 +198,7 @@ class BodyVC: UIViewController {
 
         kitchen.bodyViewState().subscribe(onNext: { viewState in
             self.label.text = viewState.labelText
+            self.label.isEnabled = viewState.isEnabled
         }).disposed(by: disposeBag)
     }
 }
@@ -231,8 +260,14 @@ class BannerVC: UIViewController {
             switch viewState.state {
             case .empty:
                 self.view.backgroundColor = .white
+                self.titleLabel.alpha = 0
+                self.messageLabel.alpha = 0
             case .success:
                 self.view.backgroundColor = .softGreen()
+                UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
+                    self.titleLabel.alpha = 1
+                    self.messageLabel.alpha = 1
+                })
             }
         }).disposed(by: disposeBag)
     }

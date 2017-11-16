@@ -10,13 +10,14 @@ struct HeaderViewState {
 
 struct BodyViewState {
     let labelText: String
+    let isEnabled: Bool
 
     static func empty() -> BodyViewState {
-        return BodyViewState(labelText: "Tap button below to add a task!")
+        return BodyViewState(labelText: "Tap button below to add a task!", isEnabled: true)
     }
 
     static func loading() -> BodyViewState {
-        return BodyViewState(labelText: "Loading...")
+        return BodyViewState(labelText: "Loading...", isEnabled: false)
     }
 }
 
