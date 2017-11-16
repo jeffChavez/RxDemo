@@ -69,8 +69,7 @@ class Kitchen {
     func footerViewState() -> Observable<FooterViewState> {
         return service.createTask()
             .map { _ -> FooterViewState in
-                let viewState = FooterViewState(buttonText: "Task Added!", isEnabled: true)
-                return viewState
+                return FooterViewState.initial()
             }
             .startWith(FooterViewState.loading())
     }
