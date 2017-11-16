@@ -17,13 +17,14 @@ class Service {
         guard !error else {
             return Observable.error(AppError.badNetwork).delay(1.5, scheduler: MainScheduler.instance)
         }
-        let user = User(name: "Jeff")
+        let user = User(name: "Jeff", hasTasks: true)
         return Observable.just(user).delay(1.5, scheduler: MainScheduler.instance)
     }
 
     func fetchTasks(for user: User) -> Observable<Int> {
-        return Observable.just(3)
+        return Observable.just(3).delay(1.5, scheduler: MainScheduler.instance)
     }
+
 }
 
 class Kitchen {
@@ -37,10 +38,13 @@ class Kitchen {
     func viewState() -> Observable<ViewState> {
         return service.fetchUser()
             .flatMap { user -> Observable<(User, Int)> in
+                if !user.hasTasks {
+                    return Observable.zip(Observable.just(user), Observable.just(0))
+                }
                 return Observable.zip(Observable.just(user), self.service.fetchTasks(for: user))
             }
             .map { (user, taskCount) -> ViewState in
-                let text = "Hello, " + user.name + ", " + "you have \(taskCount) tasks."
+                let text = "Hello, " + user.name + ". You have \(taskCount) tasks."
                 let viewState = ViewState(labelText: text)
                 return viewState
             }
@@ -51,11 +55,7 @@ class Kitchen {
                 let viewState = ViewState(labelText: error.rawValue)
                 return Observable.just(viewState)
             }
-            .startWith(loadingViewState())
-    }
-
-    private func loadingViewState() -> ViewState {
-        return ViewState(labelText: "Loading...")
+            .startWith(ViewState.loading())
     }
 }
 
