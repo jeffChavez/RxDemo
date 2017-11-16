@@ -101,5 +101,36 @@
             </objects>
             <point key="canvasLocation" x="1238" y="58"/>
         </scene>
+        <!--FooterVC-->
+        <scene sceneID="aaL-YT-Iku">
+            <objects>
+                <viewController storyboardIdentifier="FooterVC" id="nHu-CB-4UZ" customClass="FooterVC" customModule="RxDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VFm-JL-zDw">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qVn-Ef-BnJ">
+                                <rect key="frame" x="166" y="65" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.96078431369999995" green="0.96078431369999995" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="qVn-Ef-BnJ" firstAttribute="centerX" secondItem="iYD-A5-leU" secondAttribute="centerX" id="GgM-Gb-ddJ"/>
+                            <constraint firstItem="qVn-Ef-BnJ" firstAttribute="centerY" secondItem="iYD-A5-leU" secondAttribute="centerY" id="dir-fu-Lhm"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="iYD-A5-leU"/>
+                    </view>
+                    <size key="freeformSize" width="375" height="150"/>
+                    <connections>
+                        <outlet property="label" destination="qVn-Ef-BnJ" id="Wng-JZ-bmw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fg4-td-ORI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1238" y="265"/>
+        </scene>
     </scenes>
 </document>
