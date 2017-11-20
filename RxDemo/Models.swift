@@ -4,34 +4,66 @@ struct Task {
     let name: String
 }
 
-struct HeaderViewState {
-    let labelText: String
+enum TaskType: String {
+    case errand = "Errand"
+    case gym = "Gym"
 }
 
-struct BodyViewState {
-    let labelText: String
+struct TitleViewState {
+    let titleText: String
+    let bodyText: String
     let isEnabled: Bool
 
-    static func empty() -> BodyViewState {
-        return BodyViewState(labelText: "Tap button below to add a task!", isEnabled: true)
+    static func empty() -> TitleViewState {
+        return TitleViewState(titleText: "TO DO LIST", bodyText: "Select a task to add!", isEnabled: true)
     }
 
-    static func loading() -> BodyViewState {
-        return BodyViewState(labelText: "Loading...", isEnabled: false)
+    static func loading() -> TitleViewState {
+        return TitleViewState(titleText: "TO DO LIST", bodyText: "...", isEnabled: false)
     }
 }
 
-struct FooterViewState {
+struct SelectTaskTitlesViewState {
+    let typeOneTitle: String
+    let typeTwoTitle: String
+
+    static func loading() -> SelectTaskTitlesViewState {
+        return SelectTaskTitlesViewState(typeOneTitle: "", typeTwoTitle: "")
+    }
+}
+
+struct SelectTaskSelectionViewState {
+    let typeOneIsSelected: Bool
+    let typeTwoIsSelected: Bool
+
+    static func empty() -> SelectTaskSelectionViewState {
+        return SelectTaskSelectionViewState(typeOneIsSelected: false, typeTwoIsSelected: false)
+    }
+}
+
+struct AddTaskViewState {
     let buttonText: String
     let isEnabled: Bool
 
-    static func initial() -> FooterViewState {
-        return FooterViewState(buttonText: "Add Task", isEnabled: true)
+    static func initial() -> AddTaskViewState {
+        return AddTaskViewState(buttonText: "Add task", isEnabled: true)
     }
 
-    static func loading() -> FooterViewState {
-        return FooterViewState(buttonText: "Adding...", isEnabled: false)
+    static func loading() -> AddTaskViewState {
+        return AddTaskViewState(buttonText: "Adding...", isEnabled: false)
     }
+}
+
+struct TaskTableViewState {
+    let emptyLabelText: String
+
+    static func loading() -> TaskTableViewState {
+        return TaskTableViewState(emptyLabelText: "loading tasks...")
+    }
+}
+
+struct TaskViewState {
+    let text: String
 }
 
 struct BannerViewState {
@@ -46,5 +78,6 @@ struct BannerViewState {
 
 enum BannerState {
     case success
+    case error
     case empty
 }

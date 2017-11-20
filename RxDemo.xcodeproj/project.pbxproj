@@ -18,6 +18,15 @@
 		1F3D98351FB634D60009B7CD /* MainAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3D98341FB634D60009B7CD /* MainAssembly.swift */; };
 		1F3D98371FB656670009B7CD /* UIView+Constaints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3D98361FB656670009B7CD /* UIView+Constaints.swift */; };
 		1F882EF31F986C6F003771A6 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F882EF21F986C6F003771A6 /* Models.swift */; };
+		1FB68D0D1FC28BFC00483774 /* BannerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D0C1FC28BFC00483774 /* BannerVC.swift */; };
+		1FB68D0F1FC28C2000483774 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D0E1FC28C2000483774 /* Service.swift */; };
+		1FB68D131FC28C3900483774 /* Kitchen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D121FC28C3900483774 /* Kitchen.swift */; };
+		1FB68D151FC28C4300483774 /* AddTaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D141FC28C4300483774 /* AddTaskVC.swift */; };
+		1FB68D171FC28C5000483774 /* SelectTaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D161FC28C5000483774 /* SelectTaskVC.swift */; };
+		1FB68D191FC28C5B00483774 /* TaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D181FC28C5B00483774 /* TaskTableVC.swift */; };
+		1FB68D1B1FC28C7300483774 /* TitleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D1A1FC28C7300483774 /* TitleVC.swift */; };
+		1FB68D1D1FC28DA900483774 /* SingleLabelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D1C1FC28DA900483774 /* SingleLabelVC.swift */; };
+		1FB9C8871FC2A86A00FDF0E5 /* UIView+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB9C8861FC2A86A00FDF0E5 /* UIView+Animations.swift */; };
 		3A4A38C823C54DE2BE398165 /* Pods_RxDemo_RxDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2518A5BF027C9837D4ABDE /* Pods_RxDemo_RxDemoTests.framework */; };
 		84BDF2019D306FD4E25979DC /* Pods_RxDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B33E2BFDA738584E4B1AAC /* Pods_RxDemoTests.framework */; };
 		A45A11759BDF111DD1FAABBC /* Pods_RxDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB16BAA07FBBFA154E65FC /* Pods_RxDemo.framework */; };
@@ -59,6 +68,15 @@
 		1F3D98341FB634D60009B7CD /* MainAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAssembly.swift; sourceTree = "<group>"; };
 		1F3D98361FB656670009B7CD /* UIView+Constaints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constaints.swift"; sourceTree = "<group>"; };
 		1F882EF21F986C6F003771A6 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		1FB68D0C1FC28BFC00483774 /* BannerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerVC.swift; sourceTree = "<group>"; };
+		1FB68D0E1FC28C2000483774 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		1FB68D121FC28C3900483774 /* Kitchen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kitchen.swift; sourceTree = "<group>"; };
+		1FB68D141FC28C4300483774 /* AddTaskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskVC.swift; sourceTree = "<group>"; };
+		1FB68D161FC28C5000483774 /* SelectTaskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTaskVC.swift; sourceTree = "<group>"; };
+		1FB68D181FC28C5B00483774 /* TaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableVC.swift; sourceTree = "<group>"; };
+		1FB68D1A1FC28C7300483774 /* TitleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleVC.swift; sourceTree = "<group>"; };
+		1FB68D1C1FC28DA900483774 /* SingleLabelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLabelVC.swift; sourceTree = "<group>"; };
+		1FB9C8861FC2A86A00FDF0E5 /* UIView+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Animations.swift"; sourceTree = "<group>"; };
 		2E2518A5BF027C9837D4ABDE /* Pods_RxDemo_RxDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxDemo_RxDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AFF4734845A40B4BD20076B /* Pods-RxDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxDemo/Pods-RxDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		62CF7BBECDB56E7ED405E9F6 /* Pods-RxDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxDemoTests/Pods-RxDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -125,11 +143,20 @@
 			children = (
 				1F29E5751F95B10100256AC8 /* AppDelegate.swift */,
 				1F3D98341FB634D60009B7CD /* MainAssembly.swift */,
+				1FB68D0E1FC28C2000483774 /* Service.swift */,
+				1FB68D121FC28C3900483774 /* Kitchen.swift */,
 				1F29E5771F95B10100256AC8 /* ViewController.swift */,
+				1FB68D0C1FC28BFC00483774 /* BannerVC.swift */,
+				1FB68D1A1FC28C7300483774 /* TitleVC.swift */,
+				1FB68D161FC28C5000483774 /* SelectTaskVC.swift */,
+				1FB68D141FC28C4300483774 /* AddTaskVC.swift */,
+				1FB68D181FC28C5B00483774 /* TaskTableVC.swift */,
+				1FB68D1C1FC28DA900483774 /* SingleLabelVC.swift */,
 				1F882EF21F986C6F003771A6 /* Models.swift */,
 				1F29E5791F95B10100256AC8 /* Main.storyboard */,
 				1F3D98361FB656670009B7CD /* UIView+Constaints.swift */,
 				1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */,
+				1FB9C8861FC2A86A00FDF0E5 /* UIView+Animations.swift */,
 				1F29E57C1F95B10100256AC8 /* Assets.xcassets */,
 				1F29E57E1F95B10100256AC8 /* LaunchScreen.storyboard */,
 				1F29E5811F95B10100256AC8 /* Info.plist */,
@@ -413,11 +440,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F882EF31F986C6F003771A6 /* Models.swift in Sources */,
+				1FB68D0F1FC28C2000483774 /* Service.swift in Sources */,
+				1FB9C8871FC2A86A00FDF0E5 /* UIView+Animations.swift in Sources */,
+				1FB68D1B1FC28C7300483774 /* TitleVC.swift in Sources */,
 				1F3D98351FB634D60009B7CD /* MainAssembly.swift in Sources */,
 				1F3D98371FB656670009B7CD /* UIView+Constaints.swift in Sources */,
+				1FB68D191FC28C5B00483774 /* TaskTableVC.swift in Sources */,
 				1F29E5781F95B10100256AC8 /* ViewController.swift in Sources */,
 				1F29E5761F95B10100256AC8 /* AppDelegate.swift in Sources */,
+				1FB68D0D1FC28BFC00483774 /* BannerVC.swift in Sources */,
+				1FB68D151FC28C4300483774 /* AddTaskVC.swift in Sources */,
+				1FB68D131FC28C3900483774 /* Kitchen.swift in Sources */,
 				1F1A04F41FBB9FFB0023CB81 /* UIColor+AppColors.swift in Sources */,
+				1FB68D171FC28C5000483774 /* SelectTaskVC.swift in Sources */,
+				1FB68D1D1FC28DA900483774 /* SingleLabelVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
