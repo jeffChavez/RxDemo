@@ -3,13 +3,8 @@ import RxSwift
 
 class BannerVC: UIViewController {
 
-    @IBOutlet private weak var titleLabel: UILabel! { didSet {
-        titleLabel.textColor = .white
-        }}
-
-    @IBOutlet private weak var messageLabel: UILabel! { didSet {
-        messageLabel.textColor = .white
-        }}
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var messageLabel: UILabel!
 
     private var kitchen: Kitchen!
     private let disposeBag = DisposeBag()
@@ -20,6 +15,8 @@ class BannerVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        messageLabel.textColor = .white
+        titleLabel.textColor = .white
 
         kitchen.bannerViewState().subscribe(onNext: { viewState in
             self.titleLabel.text = viewState.title
