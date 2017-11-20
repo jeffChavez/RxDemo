@@ -9,6 +9,7 @@ class SingleLabelVC: UIViewController {
 
     func configure(with name: String) {
         label.text = name
+        label.textColor = .softBlack()
 
         view.addSubview(lineView)
         lineView.constrainLeading(to: view)

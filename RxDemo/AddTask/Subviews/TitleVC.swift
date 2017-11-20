@@ -15,6 +15,8 @@ class TitleVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        titleLabel.textColor = .softBlack()
+        bodyLabel.textColor = .softBlack()
 
         kitchen.titleViewState().subscribe(onNext: { viewState in
             self.titleLabel.text = viewState.titleText

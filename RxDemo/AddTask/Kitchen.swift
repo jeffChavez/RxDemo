@@ -6,6 +6,7 @@ class Kitchen {
     private let service: Service
     private let disposeBag = DisposeBag()
     private let bannerSubject = PublishSubject<BannerViewState>()
+
     private var selectedTask: TaskType?
 
     init(service: Service) {

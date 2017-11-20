@@ -17,6 +17,7 @@
 		1F29E5961F95B10200256AC8 /* RxDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F29E5951F95B10200256AC8 /* RxDemoUITests.swift */; };
 		1F3D98351FB634D60009B7CD /* MainAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3D98341FB634D60009B7CD /* MainAssembly.swift */; };
 		1F3D98371FB656670009B7CD /* UIView+Constaints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3D98361FB656670009B7CD /* UIView+Constaints.swift */; };
+		1F6373A21FC2C27000EFC390 /* ViewStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6373A11FC2C27000EFC390 /* ViewStates.swift */; };
 		1F882EF31F986C6F003771A6 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F882EF21F986C6F003771A6 /* Models.swift */; };
 		1FB68D0D1FC28BFC00483774 /* BannerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D0C1FC28BFC00483774 /* BannerVC.swift */; };
 		1FB68D0F1FC28C2000483774 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB68D0E1FC28C2000483774 /* Service.swift */; };
@@ -67,6 +68,7 @@
 		1F29E5971F95B10200256AC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F3D98341FB634D60009B7CD /* MainAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAssembly.swift; sourceTree = "<group>"; };
 		1F3D98361FB656670009B7CD /* UIView+Constaints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constaints.swift"; sourceTree = "<group>"; };
+		1F6373A11FC2C27000EFC390 /* ViewStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStates.swift; sourceTree = "<group>"; };
 		1F882EF21F986C6F003771A6 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		1FB68D0C1FC28BFC00483774 /* BannerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerVC.swift; sourceTree = "<group>"; };
 		1FB68D0E1FC28C2000483774 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
@@ -141,22 +143,12 @@
 		1F29E5741F95B10100256AC8 /* RxDemo */ = {
 			isa = PBXGroup;
 			children = (
-				1F29E5751F95B10100256AC8 /* AppDelegate.swift */,
 				1F3D98341FB634D60009B7CD /* MainAssembly.swift */,
 				1FB68D0E1FC28C2000483774 /* Service.swift */,
-				1FB68D121FC28C3900483774 /* Kitchen.swift */,
-				1F29E5771F95B10100256AC8 /* ViewController.swift */,
-				1FB68D0C1FC28BFC00483774 /* BannerVC.swift */,
-				1FB68D1A1FC28C7300483774 /* TitleVC.swift */,
-				1FB68D161FC28C5000483774 /* SelectTaskVC.swift */,
-				1FB68D141FC28C4300483774 /* AddTaskVC.swift */,
-				1FB68D181FC28C5B00483774 /* TaskTableVC.swift */,
-				1FB68D1C1FC28DA900483774 /* SingleLabelVC.swift */,
 				1F882EF21F986C6F003771A6 /* Models.swift */,
-				1F29E5791F95B10100256AC8 /* Main.storyboard */,
-				1F3D98361FB656670009B7CD /* UIView+Constaints.swift */,
-				1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */,
-				1FB9C8861FC2A86A00FDF0E5 /* UIView+Animations.swift */,
+				1F63739F1FC2C21A00EFC390 /* AddTask */,
+				1F6373A01FC2C23D00EFC390 /* Common */,
+				1F29E5751F95B10100256AC8 /* AppDelegate.swift */,
 				1F29E57C1F95B10100256AC8 /* Assets.xcassets */,
 				1F29E57E1F95B10100256AC8 /* LaunchScreen.storyboard */,
 				1F29E5811F95B10100256AC8 /* Info.plist */,
@@ -180,6 +172,41 @@
 				1F29E5971F95B10200256AC8 /* Info.plist */,
 			);
 			path = RxDemoUITests;
+			sourceTree = "<group>";
+		};
+		1F63739E1FC2C21100EFC390 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				1FB68D0C1FC28BFC00483774 /* BannerVC.swift */,
+				1FB68D1A1FC28C7300483774 /* TitleVC.swift */,
+				1FB68D161FC28C5000483774 /* SelectTaskVC.swift */,
+				1FB68D141FC28C4300483774 /* AddTaskVC.swift */,
+				1FB68D181FC28C5B00483774 /* TaskTableVC.swift */,
+				1FB68D1C1FC28DA900483774 /* SingleLabelVC.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		1F63739F1FC2C21A00EFC390 /* AddTask */ = {
+			isa = PBXGroup;
+			children = (
+				1FB68D121FC28C3900483774 /* Kitchen.swift */,
+				1F6373A11FC2C27000EFC390 /* ViewStates.swift */,
+				1F29E5771F95B10100256AC8 /* ViewController.swift */,
+				1F29E5791F95B10100256AC8 /* Main.storyboard */,
+				1F63739E1FC2C21100EFC390 /* Subviews */,
+			);
+			path = AddTask;
+			sourceTree = "<group>";
+		};
+		1F6373A01FC2C23D00EFC390 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				1F3D98361FB656670009B7CD /* UIView+Constaints.swift */,
+				1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */,
+				1FB9C8861FC2A86A00FDF0E5 /* UIView+Animations.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		20AEE1B1543424E88398191A /* Pods */ = {
@@ -449,6 +476,7 @@
 				1F29E5781F95B10100256AC8 /* ViewController.swift in Sources */,
 				1F29E5761F95B10100256AC8 /* AppDelegate.swift in Sources */,
 				1FB68D0D1FC28BFC00483774 /* BannerVC.swift in Sources */,
+				1F6373A21FC2C27000EFC390 /* ViewStates.swift in Sources */,
 				1FB68D151FC28C4300483774 /* AddTaskVC.swift in Sources */,
 				1FB68D131FC28C3900483774 /* Kitchen.swift in Sources */,
 				1F1A04F41FBB9FFB0023CB81 /* UIColor+AppColors.swift in Sources */,
