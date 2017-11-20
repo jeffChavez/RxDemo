@@ -22,7 +22,7 @@
                                 <edgeInsets key="layoutMargins" top="16" left="16" bottom="16" right="16"/>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Lwk-wZ-Ts9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="DVH-z5-t3f"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Lwk-wZ-Ts9" secondAttribute="bottom" id="Plu-Q6-wyQ"/>
@@ -106,7 +106,7 @@
                                 <edgeInsets key="layoutMargins" top="16" left="16" bottom="16" right="16"/>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Fgf-mH-we5" firstAttribute="bottom" secondItem="3Ff-v3-QaC" secondAttribute="bottom" id="JnF-LC-ATm"/>
                             <constraint firstItem="3Ff-v3-QaC" firstAttribute="leading" secondItem="Fgf-mH-we5" secondAttribute="leading" id="MrX-Pa-gVZ"/>
@@ -145,7 +145,7 @@
                                 <edgeInsets key="layoutMargins" top="16" left="16" bottom="16" right="16"/>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="Evb-Bs-oyC" firstAttribute="bottom" secondItem="mhb-Lo-wMb" secondAttribute="bottom" id="AMy-dU-Mpj"/>
                             <constraint firstItem="mhb-Lo-wMb" firstAttribute="leading" secondItem="Evb-Bs-oyC" secondAttribute="leading" id="a0z-uJ-kju"/>
@@ -183,7 +183,7 @@
                                 <edgeInsets key="layoutMargins" top="16" left="16" bottom="16" right="16"/>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="59U-jr-0hJ" firstAttribute="top" secondItem="KM7-nh-Cns" secondAttribute="top" id="XDF-x1-jD0"/>
                             <constraint firstItem="KM7-nh-Cns" firstAttribute="bottom" secondItem="59U-jr-0hJ" secondAttribute="bottom" id="YLA-Xf-dp3"/>
