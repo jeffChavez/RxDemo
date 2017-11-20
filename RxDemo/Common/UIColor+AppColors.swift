@@ -2,7 +2,7 @@ import UIKit
 
 extension UIColor {
     static func hardRed() -> UIColor {
-        return simple(r: 252, g: 99, b: 93)
+        return simple(r: 252, g: 89, b: 83)
     }
 
     static func hardGreen() -> UIColor {

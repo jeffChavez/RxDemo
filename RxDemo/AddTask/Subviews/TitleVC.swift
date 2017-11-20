@@ -17,6 +17,7 @@ class TitleVC: UIViewController {
         super.viewDidLoad()
         titleLabel.textColor = .softBlack()
         bodyLabel.textColor = .softBlack()
+        bodyLabel.isEnabled = false
 
         kitchen.titleViewState().subscribe(onNext: { viewState in
             self.titleLabel.text = viewState.titleText
