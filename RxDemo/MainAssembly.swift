@@ -14,7 +14,21 @@ class MainAssembly: Assembly {
 
         container.register(Kitchen.self) { (resolver) in
             let service = resolver.resolve(Service.self)!
-            let kitchen = Kitchen(service: service)
+            let bannerFactory = resolver.resolve(BannerViewStateFactory.self)!
+            let titleFactory = resolver.resolve(TitleViewStateFactory.self)!
+            let selectTaskFactory = resolver.resolve(SelectTaskViewStateFactory.self)!
+            let addTaskFactory = resolver.resolve(AddTaskViewStateFactory.self)!
+            let taskTableFactory = resolver.resolve(TaskTableViewStateFactory.self)!
+            let taskFactory = resolver.resolve(TaskViewStateFactory.self)!
+            let kitchen = Kitchen(
+                service: service,
+                bannerViewStateFactory: bannerFactory,
+                titleViewStateFactory: titleFactory,
+                selectTaskViewStateFactory: selectTaskFactory,
+                addTaskViewStateFactory: addTaskFactory,
+                taskTableViewStateFactory: taskTableFactory,
+                taskViewStateFactory: taskFactory
+            )
             return kitchen
             }.inObjectScope(.container)
 
@@ -45,8 +59,8 @@ class MainAssembly: Assembly {
 
         container.storyboardInitCompleted(TaskTableVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
-            let vcFactory = resolver.resolve(VCFactory.self)!
-            vc.inject(kitchen: kitchen, vcFactory: vcFactory)
+            let viewFactory = resolver.resolve(ViewFactory.self)!
+            vc.inject(kitchen: kitchen, viewFactory: viewFactory)
         }
 
         container.storyboardInitCompleted(BannerVC.self) { (resolver, vc) in
@@ -54,31 +68,39 @@ class MainAssembly: Assembly {
             vc.inject(kitchen: kitchen)
         }
 
-        container.storyboardInitCompleted(SingleLabelVC.self) { (resolver, vc) in
-
+        container.storyboardInitCompleted(TaskVC.self) { (resolver, vc) in
+            let kitchen = resolver.resolve(Kitchen.self)!
+            vc.inject(kitchen: kitchen)
         }
 
-        container.register(VCFactory.self) { resolver in
-            let storyboard = self.storyboard
-            let factory = VCFactory(resolver: resolver, storyboard: storyboard)
+        container.register(ViewFactory.self) { resolver in
+            let factory = ViewFactory(resolver: resolver, storyboard: self.storyboard)
             return factory
         }
+
+        container.register(BannerViewStateFactory.self) { resolver in
+            return BannerViewStateFactory()
+        }
+
+        container.register(TitleViewStateFactory.self) { resolver in
+            return TitleViewStateFactory()
+        }
+
+        container.register(SelectTaskViewStateFactory.self) { resolver in
+            return SelectTaskViewStateFactory()
+        }
+
+        container.register(AddTaskViewStateFactory.self) { resolver in
+            return AddTaskViewStateFactory()
+        }
+
+        container.register(TaskTableViewStateFactory.self) { resolver in
+            return TaskTableViewStateFactory()
+        }
+
+        container.register(TaskViewStateFactory.self) { resolver in
+            return TaskViewStateFactory()
+        }
     }
 
-}
-
-class VCFactory {
-
-    private let resolver: Resolver
-    private let storyboard: UIStoryboard
-
-    init(resolver: Resolver, storyboard: UIStoryboard) {
-        self.resolver = resolver
-        self.storyboard = storyboard
-    }
-
-    func makeSingleLabelVC() -> SingleLabelVC {
-        let vc = storyboard.instantiateViewController(withIdentifier: "SingleLabelVC") as! SingleLabelVC
-        return vc
-    }
 }

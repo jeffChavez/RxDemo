@@ -8,12 +8,12 @@ class TaskTableVC: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .plain)
 
     private var kitchen: Kitchen!
-    private var vcFactory: VCFactory!
+    private var viewFactory: ViewFactory!
     private let disposeBag = DisposeBag()
 
-    func inject(kitchen: Kitchen, vcFactory: VCFactory) {
+    func inject(kitchen: Kitchen, viewFactory: ViewFactory) {
         self.kitchen = kitchen
-        self.vcFactory = vcFactory
+        self.viewFactory = viewFactory
     }
 
     override func viewDidLoad() {
@@ -28,12 +28,12 @@ class TaskTableVC: UIViewController {
             self.emptyLabel.isHidden = (viewState.emptyLabelText == "") ? true : false
         }).disposed(by: disposeBag)
 
-        kitchen.taskTableViewDataSource().bind(to: self.tableView.rx.items(cellIdentifier: "CELL", cellType: UITableViewCell.self)) { (index, taskViewState, cell) in
-            let vc = self.vcFactory.makeSingleLabelVC()
+        kitchen.taskTableViewDataSource().bind(to: self.tableView.rx.items(cellIdentifier: "CELL", cellType: UITableViewCell.self)) { (index, viewState, cell) in
+            let vc = self.viewFactory.makeTaskVC()
             cell.contentView.addSubview(vc.view)
             vc.view.constrainToAllSides(of: cell.contentView)
-            vc.configure(with: taskViewState.text)
-        }.disposed(by: self.disposeBag)
+            vc.configure(index: index)
+        }.disposed(by: disposeBag)
 
         tableView.rx.itemSelected.subscribe(onNext: { indexPath in
             self.tableView.deselectRow(at: indexPath, animated: true)

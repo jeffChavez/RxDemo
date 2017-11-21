@@ -4,7 +4,7 @@ import RxSwift
 class Service {
 
     private let kDelay = 1.5
-    private let tasksSubject = PublishSubject<[Task]>()
+    private let tasksSubject = BehaviorSubject<[Task]>(value: [])
     private var tasksArray = [Task]()
 
     func fetchTasks() {
@@ -13,6 +13,10 @@ class Service {
 
     func tasks() -> Observable<[Task]> {
         return tasksSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+    }
+
+    func tasksNoDelay() -> Observable<[Task]> {
+        return tasksSubject.asObservable()
     }
 
     func createTask(ofType type: TaskType) -> Observable<Void> {

@@ -175,23 +175,37 @@
             </objects>
             <point key="canvasLocation" x="998" y="-36"/>
         </scene>
-        <!--Single LabelVC-->
+        <!--TaskVC-->
         <scene sceneID="o6i-MP-Bdt">
             <objects>
-                <viewController storyboardIdentifier="SingleLabelVC" id="vKB-Be-rTb" customClass="SingleLabelVC" customModule="RxDemo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TaskVC" id="vKB-Be-rTb" customClass="TaskVC" customModule="RxDemo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gbI-Lw-iOc">
-                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Qgq-QI-t9K">
-                                <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Qgq-QI-t9K">
+                                <rect key="frame" x="0.0" y="0.0" width="300" height="100"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qMa-Lo-rlh">
-                                        <rect key="frame" x="0.0" y="16" width="100" height="68"/>
+                                        <rect key="frame" x="0.0" y="16" width="42" height="68"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="M4V-zh-miz">
+                                        <rect key="frame" x="160" y="16" width="140" height="68"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zs8-K3-XCe">
+                                                <rect key="frame" x="16" y="0.0" width="46" height="68"/>
+                                                <state key="normal" title="Button"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3di-6c-W4S">
+                                                <rect key="frame" x="78" y="0.0" width="46" height="68"/>
+                                                <state key="normal" title="Button"/>
+                                            </button>
+                                        </subviews>
+                                        <edgeInsets key="layoutMargins" top="0.0" left="16" bottom="0.0" right="16"/>
+                                    </stackView>
                                 </subviews>
                                 <edgeInsets key="layoutMargins" top="16" left="0.0" bottom="16" right="0.0"/>
                             </stackView>
@@ -205,15 +219,17 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Bpf-jT-h5S"/>
                     </view>
-                    <size key="freeformSize" width="100" height="100"/>
+                    <size key="freeformSize" width="300" height="100"/>
                     <connections>
+                        <outlet property="completeButton" destination="zs8-K3-XCe" id="xpS-yL-Neu"/>
                         <outlet property="containerStackView" destination="Qgq-QI-t9K" id="Qct-3a-IQ0"/>
                         <outlet property="label" destination="qMa-Lo-rlh" id="gmU-Ub-kug"/>
+                        <outlet property="removeButton" destination="3di-6c-W4S" id="D2I-rH-Q1p"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kgg-MR-OlA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1490" y="312"/>
+            <point key="canvasLocation" x="1608" y="311"/>
         </scene>
         <!--Add TaskVC-->
         <scene sceneID="idK-x6-aK6">
