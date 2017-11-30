@@ -112,8 +112,22 @@ class Kitchen {
         return service.tasksNoDelay()
             .map { tasks in
                 let task = tasks[index]
-                return TaskViewState(text: task.name, completeButtonTitle: "Complete", removeButtonTitle: "Remove")
+                let viewState = self.taskViewStateFactory.make(with: index, task: task)
+                return viewState
             }
+    }
+
+    func didTapButton(withTapID tapID: Int, forIndex index: Int) -> Observable<TaskButtonViewState> {
+        service.tasksNoDelay()
+            .flatMap { tasks -> Observable<Void> in
+                let task = tasks[index]
+                return self.service.completeTask(withID: task.id)
+            }
+            .subscribe(onNext: { _ in
+                
+            }).disposed(by: disposeBag)
+        let viewState = taskViewStateFactory.makeLoadingForButton(withTapID: tapID)
+        return Observable.just(viewState)
     }
 
 }

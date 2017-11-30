@@ -19,9 +19,10 @@ class TitleVC: UIViewController {
         bodyLabel.textColor = .softBlack()
         bodyLabel.isEnabled = false
 
-        kitchen.titleViewState().subscribe(onNext: { viewState in
-            self.titleLabel.text = viewState.titleText
-            self.bodyLabel.text = viewState.bodyText
-        }).disposed(by: disposeBag)
+        kitchen.titleViewState()
+            .subscribe(onNext: { viewState in
+                self.titleLabel.text = viewState.titleText
+                self.bodyLabel.text = viewState.bodyText
+            }).disposed(by: disposeBag)
     }
 }

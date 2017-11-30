@@ -103,8 +103,29 @@ class TaskTableViewStateFactory {
 }
 
 class TaskViewStateFactory {
+
     func make(with index: Int, task: Task) -> TaskViewState {
         let text = "\(index + 1)) \(task.name)"
-        return TaskViewState(text: text, completeButtonTitle: "Complete", removeButtonTitle: "Remove")
+        let viewState = TaskViewState(
+            text: text,
+            completeButtonTitle: task.completed ? "Completed" : "Complete",
+            removeButtonTitle: "Remove",
+            completedButtonIsEnabled: task.completed ? false : true,
+            removeButtonIsEnabled: true
+        )
+        return viewState
     }
+
+    func makeLoadingForButton(withTapID tapID: Int) -> TaskButtonViewState {
+        let completedButtonTitle = (tapID == 1) ? "Completing" : "Complete"
+        let removeButtonTitle = (tapID == 2) ? "Removing" : "Remove"
+        let viewState = TaskButtonViewState(
+            completeButtonTitle: completedButtonTitle,
+            removeButtonTitle: removeButtonTitle,
+            completedButtonIsEnabled: false,
+            removeButtonIsEnabled: false
+        )
+        return viewState
+    }
+
 }

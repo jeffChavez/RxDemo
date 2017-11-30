@@ -15,10 +15,11 @@ class AddTaskVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        kitchen.initialAddTaskViewState().subscribe(onNext: { viewState in
-            self.button.setTitle(viewState.buttonText, for: .normal)
-            self.button.isEnabled = viewState.isEnabled
-        }).disposed(by: disposeBag)
+        kitchen.initialAddTaskViewState()
+            .subscribe(onNext: { viewState in
+                self.button.setTitle(viewState.buttonText, for: .normal)
+                self.button.isEnabled = viewState.isEnabled
+            }).disposed(by: disposeBag)
 
         button.rx.tap
             .flatMap {
@@ -27,7 +28,6 @@ class AddTaskVC: UIViewController {
             .subscribe(onNext: { viewState in
                 self.button.setTitle(viewState.buttonText, for: .normal)
                 self.button.isEnabled = viewState.isEnabled
-            })
-            .disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
     }
 }

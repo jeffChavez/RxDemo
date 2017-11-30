@@ -18,25 +18,26 @@ class BannerVC: UIViewController {
         messageLabel.textColor = .white
         titleLabel.textColor = .white
 
-        kitchen.bannerViewState().subscribe(onNext: { viewState in
-            self.titleLabel.text = viewState.title
-            self.messageLabel.text = viewState.message
-
-            self.titleLabel.alpha = 0
-            self.messageLabel.alpha = 0
-
-            switch viewState.state {
-            case .empty:
-                break
-            case .success:
-                self.view.backgroundColor = .hardGreen()
-            case .error:
-                self.view.backgroundColor = .hardRed()
-            }
-            UIView.springAnimation(duringHandler: {
-                self.titleLabel.alpha = 1
-                self.messageLabel.alpha = 1
-            })
-        }).disposed(by: disposeBag)
+        kitchen.bannerViewState()
+            .subscribe(onNext: { viewState in
+                self.titleLabel.text = viewState.title
+                self.messageLabel.text = viewState.message
+                
+                self.titleLabel.alpha = 0
+                self.messageLabel.alpha = 0
+                
+                switch viewState.state {
+                case .empty:
+                    break
+                case .success:
+                    self.view.backgroundColor = .hardGreen()
+                case .error:
+                    self.view.backgroundColor = .hardRed()
+                }
+                UIView.springAnimation(duringHandler: {
+                    self.titleLabel.alpha = 1
+                    self.messageLabel.alpha = 1
+                })
+            }).disposed(by: disposeBag)
     }
 }

@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     private var titleVC: TitleVC!
     private var selectTaskVC: SelectTaskVC!
     private var addTaskVC: AddTaskVC!
-    private var taskTableVC: TaskTableVC!
+    private var taskTableView: TaskTableView!
     private var bannerVC: BannerVC!
 
     private let disposeBag = DisposeBag()
@@ -19,12 +19,12 @@ class ViewController: UIViewController {
     private var bannerTopConstraint: NSLayoutConstraint?
     private var bannerBottomConstraint: NSLayoutConstraint?
 
-    func inject(kitchen: Kitchen, titleVC: TitleVC, selectTaskVC: SelectTaskVC, addTaskVC: AddTaskVC, taskTableVC: TaskTableVC, bannerVC: BannerVC) {
+    func inject(kitchen: Kitchen, titleVC: TitleVC, selectTaskVC: SelectTaskVC, addTaskVC: AddTaskVC, taskTableView: TaskTableView, bannerVC: BannerVC) {
         self.kitchen = kitchen
         self.titleVC = titleVC
         self.selectTaskVC = selectTaskVC
         self.addTaskVC = addTaskVC
-        self.taskTableVC = taskTableVC
+        self.taskTableView = taskTableView
         self.bannerVC = bannerVC
     }
 
@@ -35,13 +35,7 @@ class ViewController: UIViewController {
         containerStackView.addArrangedSubview(titleVC.view)
         containerStackView.addArrangedSubview(selectTaskVC.view)
         containerStackView.addArrangedSubview(addTaskVC.view)
-        let stretchyView = UIView()
-        containerStackView.addArrangedSubview(stretchyView)
-        view.layoutIfNeeded()
-        taskTableVC.view.constrainHeight(constant: stretchyView.frame.height - 20)
-        containerStackView.removeArrangedSubview(stretchyView)
-        stretchyView.removeFromSuperview()
-        containerStackView.addArrangedSubview(taskTableVC.view)
+        containerStackView.addArrangedSubview(taskTableView)
 
         setupBannerVC()
         kitchen.fetchTasks()
@@ -61,14 +55,15 @@ class ViewController: UIViewController {
         topConstraint.isActive = false
         bannerTopConstraint = topConstraint
 
-        kitchen.bannerViewState().subscribe(onNext: { viewState in
-            switch viewState.state {
-            case .success, .error:
-                self.showBanner(true)
-            case .empty:
-                self.showBanner(false)
-            }
-        }).disposed(by: disposeBag)
+        kitchen.bannerViewState()
+            .subscribe(onNext: { viewState in
+                switch viewState.state {
+                case .success, .error:
+                    self.showBanner(true)
+                case .empty:
+                    self.showBanner(false)
+                }
+            }).disposed(by: disposeBag)
 
         let bannerTap = bannerVC.view.rx.tapGesture().when(.recognized)
         let viewTap = view.rx.tapGesture().when(.recognized)

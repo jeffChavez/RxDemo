@@ -38,8 +38,8 @@ class MainAssembly: Assembly {
             let selectTaskVC = self.storyboard.instantiateViewController(withIdentifier: "SelectTaskVC") as! SelectTaskVC
             let addTaskVC = self.storyboard.instantiateViewController(withIdentifier: "AddTaskVC") as! AddTaskVC
             let bannerVC = self.storyboard.instantiateViewController(withIdentifier: "BannerVC") as! BannerVC
-            let taskTableVC = self.storyboard.instantiateViewController(withIdentifier: "TaskTableVC") as! TaskTableVC
-            vc.inject(kitchen: kitchen, titleVC: titleVC, selectTaskVC: selectTaskVC, addTaskVC: addTaskVC, taskTableVC: taskTableVC, bannerVC: bannerVC)
+            let taskTableView = resolver.resolve(TaskTableView.self)!
+            vc.inject(kitchen: kitchen, titleVC: titleVC, selectTaskVC: selectTaskVC, addTaskVC: addTaskVC, taskTableView: taskTableView, bannerVC: bannerVC)
         }
 
         container.storyboardInitCompleted(TitleVC.self) { (resolver, vc) in
@@ -57,10 +57,11 @@ class MainAssembly: Assembly {
             vc.inject(kitchen: kitchen)
         }
 
-        container.storyboardInitCompleted(TaskTableVC.self) { (resolver, vc) in
+        container.register(TaskTableView.self) { resolver in
             let kitchen = resolver.resolve(Kitchen.self)!
             let viewFactory = resolver.resolve(ViewFactory.self)!
-            vc.inject(kitchen: kitchen, viewFactory: viewFactory)
+            let tableView = TaskTableView(kitchen: kitchen, viewFactory: viewFactory)
+            return tableView
         }
 
         container.storyboardInitCompleted(BannerVC.self) { (resolver, vc) in

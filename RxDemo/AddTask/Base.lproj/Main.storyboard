@@ -187,13 +187,13 @@
                                 <rect key="frame" x="0.0" y="0.0" width="300" height="100"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qMa-Lo-rlh">
-                                        <rect key="frame" x="0.0" y="16" width="42" height="68"/>
+                                        <rect key="frame" x="16" y="16" width="42" height="68"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="M4V-zh-miz">
-                                        <rect key="frame" x="160" y="16" width="140" height="68"/>
+                                        <rect key="frame" x="144" y="16" width="140" height="68"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zs8-K3-XCe">
                                                 <rect key="frame" x="16" y="0.0" width="46" height="68"/>
@@ -207,7 +207,7 @@
                                         <edgeInsets key="layoutMargins" top="0.0" left="16" bottom="0.0" right="16"/>
                                     </stackView>
                                 </subviews>
-                                <edgeInsets key="layoutMargins" top="16" left="0.0" bottom="16" right="0.0"/>
+                                <edgeInsets key="layoutMargins" top="16" left="16" bottom="16" right="16"/>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -229,7 +229,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kgg-MR-OlA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1608" y="311"/>
+            <point key="canvasLocation" x="997" y="298"/>
         </scene>
         <!--Add TaskVC-->
         <scene sceneID="idK-x6-aK6">
@@ -243,12 +243,12 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNL-C3-hwl">
-                                        <rect key="frame" x="16" y="16" width="343" height="68"/>
+                                        <rect key="frame" x="8" y="8" width="359" height="84"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <state key="normal" title="Button"/>
                                     </button>
                                 </subviews>
-                                <edgeInsets key="layoutMargins" top="16" left="16" bottom="16" right="16"/>
+                                <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -268,48 +268,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xOO-cq-TST" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="998" y="128"/>
-        </scene>
-        <!--Task TableVC-->
-        <scene sceneID="w5g-LO-ccl">
-            <objects>
-                <viewController storyboardIdentifier="TaskTableVC" id="9qx-Yl-Js7" customClass="TaskTableVC" customModule="RxDemo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="v5P-Jd-yC0">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bqN-gj-Rcg">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
-                                <edgeInsets key="layoutMargins" top="0.0" left="16" bottom="16" right="16"/>
-                            </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0KX-9C-Ih4">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="xSb-XP-9Ty" firstAttribute="bottom" secondItem="bqN-gj-Rcg" secondAttribute="bottom" id="0Eg-Id-oAd"/>
-                            <constraint firstItem="xSb-XP-9Ty" firstAttribute="bottom" secondItem="0KX-9C-Ih4" secondAttribute="bottom" id="0Or-od-yC7"/>
-                            <constraint firstItem="0KX-9C-Ih4" firstAttribute="top" secondItem="xSb-XP-9Ty" secondAttribute="top" id="1uL-Nq-eOc"/>
-                            <constraint firstItem="bqN-gj-Rcg" firstAttribute="top" secondItem="xSb-XP-9Ty" secondAttribute="top" id="Xf1-t6-IQc"/>
-                            <constraint firstItem="bqN-gj-Rcg" firstAttribute="leading" secondItem="xSb-XP-9Ty" secondAttribute="leading" id="gWR-1W-Bkt"/>
-                            <constraint firstItem="0KX-9C-Ih4" firstAttribute="leading" secondItem="xSb-XP-9Ty" secondAttribute="leading" id="gkA-LX-IW0"/>
-                            <constraint firstItem="xSb-XP-9Ty" firstAttribute="trailing" secondItem="0KX-9C-Ih4" secondAttribute="trailing" id="qjc-7d-zso"/>
-                            <constraint firstItem="xSb-XP-9Ty" firstAttribute="trailing" secondItem="bqN-gj-Rcg" secondAttribute="trailing" id="qnG-u6-Xxl"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="xSb-XP-9Ty"/>
-                    </view>
-                    <size key="freeformSize" width="375" height="100"/>
-                    <connections>
-                        <outlet property="containerStackView" destination="bqN-gj-Rcg" id="JYY-Yt-wEU"/>
-                        <outlet property="emptyLabel" destination="0KX-9C-Ih4" id="pTP-sB-Rtk"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="tYX-A7-clp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="998" y="312"/>
         </scene>
     </scenes>
 </document>

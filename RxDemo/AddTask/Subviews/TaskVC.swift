@@ -20,29 +20,35 @@ class TaskVC: UIViewController {
     func configure(index: Int) {
         setupLineView()
 
-        kitchen.taskViewState(withIndex: index).subscribe(onNext: { viewState in
-            self.label.text = viewState.text
-            self.completeButton.setTitle(viewState.completeButtonTitle, for: .normal)
-            self.removeButton.setTitle(viewState.removeButtonTitle, for: .normal)
-        }).disposed(by: disposeBag)
+        kitchen.taskViewState(withIndex: index)
+            .subscribe(onNext: { viewState in
+                self.label.text = viewState.text
+                self.completeButton.setTitle(viewState.completeButtonTitle, for: .normal)
+                self.completeButton.isEnabled = viewState.completedButtonIsEnabled
+                self.removeButton.setTitle(viewState.removeButtonTitle, for: .normal)
+                self.removeButton.isEnabled = viewState.removeButtonIsEnabled
+            }).disposed(by: disposeBag)
 
         let completeTapObs = completeButton.rx.controlEvent(.touchUpInside).asObservable().map { 1 }
         let remove2TapObs = removeButton.rx.controlEvent(.touchUpInside).asObservable().map { 2 }
         Observable.merge(completeTapObs, remove2TapObs)
             .flatMap { tapID in
-                self.kitchen.taskViewState(withIndex: index)
+                return self.kitchen.didTapButton(withTapID: tapID, forIndex: index)
             }
-            .map { viewState in
-
-        }
+            .subscribe(onNext: { viewState in
+                self.completeButton.setTitle(viewState.completeButtonTitle, for: .normal)
+                self.completeButton.isEnabled = viewState.completedButtonIsEnabled
+                self.removeButton.setTitle(viewState.removeButtonTitle, for: .normal)
+                self.removeButton.isEnabled = viewState.removeButtonIsEnabled
+            }).disposed(by: disposeBag)
     }
 
     private func setupLineView() {
         label.textColor = .softBlack()
 
         view.addSubview(lineView)
-        lineView.constrainLeading(to: view)
-        lineView.constrainTrailing(to: view)
+        lineView.constrainLeading(to: view, constant: 16)
+        lineView.constrainTrailing(to: view, constant: 16)
         lineView.constrainBottom(to: view)
         lineView.constrainHeight(constant: 1.75)
         lineView.backgroundColor = .softWhite()

@@ -21,8 +21,7 @@ class SelectTaskVC: UIViewController {
             .subscribe(onNext: { viewState in
                 self.button1.setTitle(viewState.typeOneTitle, for: .normal)
                 self.button2.setTitle(viewState.typeTwoTitle, for: .normal)
-            })
-            .disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
 
         let button1TapObs = button1.rx.controlEvent(.touchUpInside).asObservable().map { 1 }
         let button2TapObs = button2.rx.controlEvent(.touchUpInside).asObservable().map { 2 }
@@ -33,7 +32,6 @@ class SelectTaskVC: UIViewController {
             .subscribe(onNext: { viewState in
                 self.button1.isSelected = viewState.typeOneIsSelected
                 self.button2.isSelected = viewState.typeTwoIsSelected
-            })
-            .disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
     }
 }

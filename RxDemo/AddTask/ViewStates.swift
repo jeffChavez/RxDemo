@@ -41,4 +41,13 @@ struct TaskViewState {
     let text: String
     let completeButtonTitle: String
     let removeButtonTitle: String
+    let completedButtonIsEnabled: Bool
+    let removeButtonIsEnabled: Bool
+}
+
+struct TaskButtonViewState {
+    let completeButtonTitle: String
+    let removeButtonTitle: String
+    let completedButtonIsEnabled: Bool
+    let removeButtonIsEnabled: Bool
 }

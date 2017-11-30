@@ -20,7 +20,8 @@ class Service {
     }
 
     func createTask(ofType type: TaskType) -> Observable<Void> {
-        let newTask = Task(name: type.rawValue)
+        let id = UUID()
+        let newTask = Task(id: id.uuidString, name: type.rawValue, completed: false)
         tasksArray.append(newTask)
         tasksSubject.onNext(tasksArray)
         return Observable.just(Void()).delay(kDelay, scheduler: MainScheduler.instance)
@@ -32,6 +33,18 @@ class Service {
             TaskType.gym
         ]
         return Observable.just(types).delay(kDelay, scheduler: MainScheduler.instance)
+    }
+
+    func completeTask(withID id: String) -> Observable<Void> {
+        let newTasks = tasksArray.map { task -> Task in
+            if task.id == id {
+                return Task(id: task.id, name: task.name, completed: true)
+            }
+            return task
+        }
+        tasksArray = newTasks
+        tasksSubject.onNext(tasksArray)
+        return Observable.just(Void())
     }
 
 }
