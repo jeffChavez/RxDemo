@@ -37,14 +37,8 @@ class Kitchen {
 
     func viewState() -> Observable<ViewState> {
         return service.fetchUser()
-            .flatMap { user -> Observable<(User, Int)> in
-                if !user.hasTasks {
-                    return Observable.zip(Observable.just(user), Observable.just(0))
-                }
-                return Observable.zip(Observable.just(user), self.service.fetchTasks(for: user))
-            }
-            .map { (user, taskCount) -> ViewState in
-                let text = "Hello, " + user.name + ". You have \(taskCount) tasks."
+            .map { user -> ViewState in
+                let text = "Hello, " + user.name + "."
                 let viewState = ViewState(labelText: text)
                 return viewState
             }
