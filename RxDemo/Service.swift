@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-class Service {
+class MainService {
 
     private let kDelay = 1.5
     private let tasksSubject = BehaviorSubject<[Task]>(value: [])
@@ -35,7 +35,7 @@ class Service {
         return Observable.just(types).delay(kDelay, scheduler: MainScheduler.instance)
     }
 
-    func completeTask(withID id: String) -> Observable<Void> {
+    func completeTask(withID id: String) {
         let newTasks = tasksArray.map { task -> Task in
             if task.id == id {
                 return Task(id: task.id, name: task.name, completed: true)
@@ -44,7 +44,6 @@ class Service {
         }
         tasksArray = newTasks
         tasksSubject.onNext(tasksArray)
-        return Observable.just(Void())
     }
 
 }

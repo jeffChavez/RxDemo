@@ -17,10 +17,10 @@ class TaskVC: UIViewController {
         self.kitchen = kitchen
     }
 
-    func configure(index: Int) {
+    func configure(with index: Int) {
         setupLineView()
 
-        kitchen.taskViewState(withIndex: index)
+        kitchen.taskViewState(for: index)
             .subscribe(onNext: { viewState in
                 self.label.text = viewState.text
                 self.completeButton.setTitle(viewState.completeButtonTitle, for: .normal)
@@ -29,17 +29,15 @@ class TaskVC: UIViewController {
                 self.removeButton.isEnabled = viewState.removeButtonIsEnabled
             }).disposed(by: disposeBag)
 
-        let completeTapObs = completeButton.rx.controlEvent(.touchUpInside).asObservable().map { 1 }
-        let remove2TapObs = removeButton.rx.controlEvent(.touchUpInside).asObservable().map { 2 }
-        Observable.merge(completeTapObs, remove2TapObs)
-            .flatMap { tapID in
-                return self.kitchen.didTapButton(withTapID: tapID, forIndex: index)
+        let completeAction = completeButton.rx.controlEvent(.touchUpInside).asObservable().map { Action.completeTask }
+        let removeAction = removeButton.rx.controlEvent(.touchUpInside).asObservable().map { Action.removeTask }
+        Observable.merge(completeAction, removeAction)
+            .flatMap { action in
+                return self.kitchen.didTapButton(with: action, index: index)
             }
             .subscribe(onNext: { viewState in
                 self.completeButton.setTitle(viewState.completeButtonTitle, for: .normal)
                 self.completeButton.isEnabled = viewState.completedButtonIsEnabled
-                self.removeButton.setTitle(viewState.removeButtonTitle, for: .normal)
-                self.removeButton.isEnabled = viewState.removeButtonIsEnabled
             }).disposed(by: disposeBag)
     }
 

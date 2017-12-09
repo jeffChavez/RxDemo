@@ -7,13 +7,14 @@ class MainAssembly: Assembly {
     private let storyboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
 
     func assemble(container: Container) {
-        container.register(Service.self) { (resolver) in
-            let service = Service()
+
+        container.register(MainService.self) { (resolver) in
+            let service = MainService()
             return service
         }
 
         container.register(Kitchen.self) { (resolver) in
-            let service = resolver.resolve(Service.self)!
+            let service = resolver.resolve(MainService.self)!
             let bannerFactory = resolver.resolve(BannerViewStateFactory.self)!
             let titleFactory = resolver.resolve(TitleViewStateFactory.self)!
             let selectTaskFactory = resolver.resolve(SelectTaskViewStateFactory.self)!

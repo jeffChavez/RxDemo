@@ -34,12 +34,12 @@ class TaskTableView: UITableView {
             }).disposed(by: disposeBag)
 
         kitchen.taskTableViewDataSource()
-            .bind(to: rx.items) { (_, index, viewState) in
+            .bind(to: rx.items) { (_, index, _) in
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "CELL")
                 let vc = self.viewFactory.makeTaskVC()
                 cell.contentView.addSubview(vc.view)
                 vc.view.constrainToAllSides(of: cell.contentView)
-                vc.configure(index: index)
+                vc.configure(with: index)
                 return cell
             }.disposed(by: disposeBag)
 

@@ -3,7 +3,7 @@ import RxSwift
 
 class Kitchen {
 
-    private let service: Service
+    private let service: MainService
     private let bannerViewStateFactory: BannerViewStateFactory
     private let titleViewStateFactory: TitleViewStateFactory
     private let selectTaskViewStateFactory: SelectTaskViewStateFactory
@@ -16,7 +16,7 @@ class Kitchen {
 
     private var selectedTask: TaskType?
 
-    init(service: Service, bannerViewStateFactory: BannerViewStateFactory, titleViewStateFactory: TitleViewStateFactory, selectTaskViewStateFactory: SelectTaskViewStateFactory, addTaskViewStateFactory: AddTaskViewStateFactory, taskTableViewStateFactory: TaskTableViewStateFactory, taskViewStateFactory: TaskViewStateFactory) {
+    init(service: MainService, bannerViewStateFactory: BannerViewStateFactory, titleViewStateFactory: TitleViewStateFactory, selectTaskViewStateFactory: SelectTaskViewStateFactory, addTaskViewStateFactory: AddTaskViewStateFactory, taskTableViewStateFactory: TaskTableViewStateFactory, taskViewStateFactory: TaskViewStateFactory) {
         self.service = service
         self.bannerViewStateFactory = bannerViewStateFactory
         self.titleViewStateFactory = titleViewStateFactory
@@ -108,7 +108,7 @@ class Kitchen {
             .startWith([])
     }
 
-    func taskViewState(withIndex index: Int) -> Observable<TaskViewState> {
+    func taskViewState(for index: Int) -> Observable<TaskViewState> {
         return service.tasksNoDelay()
             .map { tasks in
                 let task = tasks[index]
@@ -117,17 +117,19 @@ class Kitchen {
             }
     }
 
-    func didTapButton(withTapID tapID: Int, forIndex index: Int) -> Observable<TaskButtonViewState> {
-        service.tasksNoDelay()
-            .flatMap { tasks -> Observable<Void> in
+    func didTapButton(with action: Action, index: Int) -> Observable<TaskViewState> {
+        let indexObs = Observable.just(index)
+        Observable.combineLatest(service.tasks(), indexObs)
+            .subscribe(onNext: { tuple in
+                let tasks = tuple.0
+                let index = tuple.1
                 let task = tasks[index]
-                return self.service.completeTask(withID: task.id)
-            }
-            .subscribe(onNext: { _ in
-                
+                self.service.completeTask(withID: task.id)
+                // infinite loop urghgg
             }).disposed(by: disposeBag)
-        let viewState = taskViewStateFactory.makeLoadingForButton(withTapID: tapID)
-        return Observable.just(viewState)
+
+        let loadingViewState = TaskViewState(text: "", completeButtonTitle: "Completing", removeButtonTitle: "", completedButtonIsEnabled: false, removeButtonIsEnabled: false)
+        return Observable.just(loadingViewState)
     }
 
 }
