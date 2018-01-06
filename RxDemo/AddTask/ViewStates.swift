@@ -23,11 +23,6 @@ struct SelectTaskTitlesViewState {
     let typeTwoTitle: String
 }
 
-struct SelectTaskSelectionViewState {
-    let typeOneIsSelected: Bool
-    let typeTwoIsSelected: Bool
-}
-
 struct AddTaskViewState {
     let buttonText: String
     let isEnabled: Bool

@@ -10,10 +10,6 @@ class BannerViewStateFactory {
         return BannerViewState(title: "Error", message: "You must select a task to add", state: .error)
     }
 
-    func makeEmpty() -> BannerViewState {
-        return BannerViewState(title: "", message: "", state: .empty)
-    }
-
 }
 
 class TitleViewStateFactory {

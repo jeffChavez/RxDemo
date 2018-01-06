@@ -29,15 +29,10 @@ class Kitchen {
     // MARK: - Banner
 
     func bannerViewState() -> Observable<BannerViewState> {
-        mainService.taskCreated()
-            .skip(2)
+        return mainService.taskCreated()
             .map { _ in
-                self.bannerViewStateFactory.make()
+                return self.bannerViewStateFactory.make()
             }
-            .subscribe(onNext: { viewState in
-                self.bannerSubject.onNext(viewState)
-            }).disposed(by: disposeBag)
-        return bannerSubject.asObservable()
     }
 
     // MARK: - Title
@@ -53,7 +48,7 @@ class Kitchen {
     // MARK: - Select Task
 
     func selectTaskTitlesViewState() -> Observable<SelectTaskTitlesViewState> {
-        return service.taskTypes()
+        return mainService.taskTypesFetched()
             .map { types in
                 self.selectTaskViewStateFactory.makeTitles(with: types)
             }
