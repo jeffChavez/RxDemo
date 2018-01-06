@@ -6,7 +6,8 @@ struct Task {
     let completed: Bool
 }
 
-enum TaskType: String {
-    case errand = "Errand"
-    case gym = "Gym"
+struct TaskType {
+    let id: String
+    let name: String
+    let selected: Bool
 }

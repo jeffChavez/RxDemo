@@ -9,12 +9,25 @@ class MainAssembly: Assembly {
     func assemble(container: Container) {
 
         container.register(MainService.self) { (resolver) in
-            let service = MainService()
+            let actioner = resolver.resolve(Actioner.self)!
+            let service = MainService(actioner: actioner)
             return service
         }
 
+        container.register(LocalService.self) { resolver in
+            let mainService = resolver.resolve(MainService.self)!
+            let actioner = resolver.resolve(Actioner.self)!
+            let service = LocalService(service: mainService, actioner: actioner)
+            return service
+        }
+
+        container.register(Actioner.self) { resolver in
+            return Actioner()
+        }.inObjectScope(.container)
+
         container.register(Kitchen.self) { (resolver) in
-            let service = resolver.resolve(MainService.self)!
+            let mainService = resolver.resolve(MainService.self)!
+            let localService = resolver.resolve(LocalService.self)!
             let bannerFactory = resolver.resolve(BannerViewStateFactory.self)!
             let titleFactory = resolver.resolve(TitleViewStateFactory.self)!
             let selectTaskFactory = resolver.resolve(SelectTaskViewStateFactory.self)!
@@ -22,7 +35,8 @@ class MainAssembly: Assembly {
             let taskTableFactory = resolver.resolve(TaskTableViewStateFactory.self)!
             let taskFactory = resolver.resolve(TaskViewStateFactory.self)!
             let kitchen = Kitchen(
-                service: service,
+                mainService: mainService,
+                localService: localService,
                 bannerViewStateFactory: bannerFactory,
                 titleViewStateFactory: titleFactory,
                 selectTaskViewStateFactory: selectTaskFactory,
@@ -34,13 +48,14 @@ class MainAssembly: Assembly {
             }.inObjectScope(.container)
 
         container.storyboardInitCompleted(ViewController.self) { (resolver, vc) in
+            let actioner = resolver.resolve(Actioner.self)!
             let kitchen = resolver.resolve(Kitchen.self)!
             let titleVC = self.storyboard.instantiateViewController(withIdentifier: "TitleVC") as! TitleVC
             let selectTaskVC = self.storyboard.instantiateViewController(withIdentifier: "SelectTaskVC") as! SelectTaskVC
             let addTaskVC = self.storyboard.instantiateViewController(withIdentifier: "AddTaskVC") as! AddTaskVC
             let bannerVC = self.storyboard.instantiateViewController(withIdentifier: "BannerVC") as! BannerVC
             let taskTableView = resolver.resolve(TaskTableView.self)!
-            vc.inject(kitchen: kitchen, titleVC: titleVC, selectTaskVC: selectTaskVC, addTaskVC: addTaskVC, taskTableView: taskTableView, bannerVC: bannerVC)
+            vc.inject(actioner: actioner, kitchen: kitchen, titleVC: titleVC, selectTaskVC: selectTaskVC, addTaskVC: addTaskVC, taskTableView: taskTableView, bannerVC: bannerVC)
         }
 
         container.storyboardInitCompleted(TitleVC.self) { (resolver, vc) in

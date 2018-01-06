@@ -7,6 +7,7 @@ class ViewController: UIViewController {
 
     @IBOutlet private weak var containerStackView: UIStackView!
 
+    private var actioner: Actioner!
     private var kitchen: Kitchen!
     private var titleVC: TitleVC!
     private var selectTaskVC: SelectTaskVC!
@@ -19,7 +20,7 @@ class ViewController: UIViewController {
     private var bannerTopConstraint: NSLayoutConstraint?
     private var bannerBottomConstraint: NSLayoutConstraint?
 
-    func inject(kitchen: Kitchen, titleVC: TitleVC, selectTaskVC: SelectTaskVC, addTaskVC: AddTaskVC, taskTableView: TaskTableView, bannerVC: BannerVC) {
+    func inject(actioner: Actioner, kitchen: Kitchen, titleVC: TitleVC, selectTaskVC: SelectTaskVC, addTaskVC: AddTaskVC, taskTableView: TaskTableView, bannerVC: BannerVC) {
         self.kitchen = kitchen
         self.titleVC = titleVC
         self.selectTaskVC = selectTaskVC
@@ -38,7 +39,7 @@ class ViewController: UIViewController {
         containerStackView.addArrangedSubview(taskTableView)
 
         setupBannerVC()
-        kitchen.fetchTasks()
+        actioner.fetchTasks()
     }
 
     private func setupBannerVC() {

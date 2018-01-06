@@ -3,7 +3,9 @@ import RxSwift
 
 class Kitchen {
 
-    private let service: MainService
+    private let mainService: MainService
+    private let localService: LocalService
+
     private let bannerViewStateFactory: BannerViewStateFactory
     private let titleViewStateFactory: TitleViewStateFactory
     private let selectTaskViewStateFactory: SelectTaskViewStateFactory
@@ -12,12 +14,10 @@ class Kitchen {
     private let taskViewStateFactory: TaskViewStateFactory
 
     private let disposeBag = DisposeBag()
-    private let bannerSubject = PublishSubject<BannerViewState>()
 
-    private var selectedTask: TaskType?
-
-    init(service: MainService, bannerViewStateFactory: BannerViewStateFactory, titleViewStateFactory: TitleViewStateFactory, selectTaskViewStateFactory: SelectTaskViewStateFactory, addTaskViewStateFactory: AddTaskViewStateFactory, taskTableViewStateFactory: TaskTableViewStateFactory, taskViewStateFactory: TaskViewStateFactory) {
-        self.service = service
+    init(mainService: MainService, localService: LocalService, bannerViewStateFactory: BannerViewStateFactory, titleViewStateFactory: TitleViewStateFactory, selectTaskViewStateFactory: SelectTaskViewStateFactory, addTaskViewStateFactory: AddTaskViewStateFactory, taskTableViewStateFactory: TaskTableViewStateFactory, taskViewStateFactory: TaskViewStateFactory) {
+        self.mainService = mainService
+        self.localService = localService
         self.bannerViewStateFactory = bannerViewStateFactory
         self.titleViewStateFactory = titleViewStateFactory
         self.selectTaskViewStateFactory = selectTaskViewStateFactory
@@ -26,14 +26,10 @@ class Kitchen {
         self.taskViewStateFactory = taskViewStateFactory
     }
 
-    func fetchTasks() {
-        service.fetchTasks()
-    }
-
     // MARK: - Banner
 
     func bannerViewState() -> Observable<BannerViewState> {
-        service.tasks()
+        mainService.taskCreated()
             .skip(2)
             .map { _ in
                 self.bannerViewStateFactory.make()
@@ -47,7 +43,7 @@ class Kitchen {
     // MARK: - Title
 
     func titleViewState() -> Observable<TitleViewState> {
-        return service.tasks()
+        return mainService.tasksFetched()
             .map { tasks in
                 self.titleViewStateFactory.make(with: tasks)
             }
