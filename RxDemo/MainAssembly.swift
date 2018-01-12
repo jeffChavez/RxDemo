@@ -26,20 +26,22 @@ class MainAssembly: Assembly {
         }.inObjectScope(.container)
 
         container.register(Kitchen.self) { (resolver) in
+            let actioner = resolver.resolve(Actioner.self)!
             let mainService = resolver.resolve(MainService.self)!
             let localService = resolver.resolve(LocalService.self)!
             let bannerFactory = resolver.resolve(BannerViewStateFactory.self)!
             let titleFactory = resolver.resolve(TitleViewStateFactory.self)!
-            let selectTaskFactory = resolver.resolve(SelectTaskViewStateFactory.self)!
+            let selectTypeFactory = resolver.resolve(SelectTypeViewStateFactory.self)!
             let addTaskFactory = resolver.resolve(AddTaskViewStateFactory.self)!
             let taskTableFactory = resolver.resolve(TaskTableViewStateFactory.self)!
             let taskFactory = resolver.resolve(TaskViewStateFactory.self)!
             let kitchen = Kitchen(
+                actioner: actioner,
                 mainService: mainService,
                 localService: localService,
                 bannerViewStateFactory: bannerFactory,
                 titleViewStateFactory: titleFactory,
-                selectTaskViewStateFactory: selectTaskFactory,
+                selectTypeViewStateFactory: selectTypeFactory,
                 addTaskViewStateFactory: addTaskFactory,
                 taskTableViewStateFactory: taskTableFactory,
                 taskViewStateFactory: taskFactory
@@ -51,11 +53,11 @@ class MainAssembly: Assembly {
             let actioner = resolver.resolve(Actioner.self)!
             let kitchen = resolver.resolve(Kitchen.self)!
             let titleVC = self.storyboard.instantiateViewController(withIdentifier: "TitleVC") as! TitleVC
-            let selectTaskVC = self.storyboard.instantiateViewController(withIdentifier: "SelectTaskVC") as! SelectTaskVC
+            let selectTypeVC = self.storyboard.instantiateViewController(withIdentifier: "SelectTypeVC") as! SelectTypeVC
             let addTaskVC = self.storyboard.instantiateViewController(withIdentifier: "AddTaskVC") as! AddTaskVC
             let bannerVC = self.storyboard.instantiateViewController(withIdentifier: "BannerVC") as! BannerVC
             let taskTableView = resolver.resolve(TaskTableView.self)!
-            vc.inject(actioner: actioner, kitchen: kitchen, titleVC: titleVC, selectTaskVC: selectTaskVC, addTaskVC: addTaskVC, taskTableView: taskTableView, bannerVC: bannerVC)
+            vc.inject(actioner: actioner, kitchen: kitchen, titleVC: titleVC, selectTypeVC: selectTypeVC, addTaskVC: addTaskVC, taskTableView: taskTableView, bannerVC: bannerVC)
         }
 
         container.storyboardInitCompleted(TitleVC.self) { (resolver, vc) in
@@ -63,14 +65,16 @@ class MainAssembly: Assembly {
             vc.inject(kitchen: kitchen)
         }
 
-        container.storyboardInitCompleted(SelectTaskVC.self) { (resolver, vc) in
+        container.storyboardInitCompleted(SelectTypeVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
+            let actioner = resolver.resolve(Actioner.self)!
+            vc.inject(kitchen: kitchen, actioner: actioner)
         }
 
         container.storyboardInitCompleted(AddTaskVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
+            let actioner = resolver.resolve(Actioner.self)!
+            vc.inject(kitchen: kitchen, actioner: actioner)
         }
 
         container.register(TaskTableView.self) { resolver in
@@ -87,7 +91,8 @@ class MainAssembly: Assembly {
 
         container.storyboardInitCompleted(TaskVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
+            let actioner = resolver.resolve(Actioner.self)!
+            vc.inject(kitchen: kitchen, actioner: actioner)
         }
 
         container.register(ViewFactory.self) { resolver in
@@ -103,8 +108,8 @@ class MainAssembly: Assembly {
             return TitleViewStateFactory()
         }
 
-        container.register(SelectTaskViewStateFactory.self) { resolver in
-            return SelectTaskViewStateFactory()
+        container.register(SelectTypeViewStateFactory.self) { resolver in
+            return SelectTypeViewStateFactory()
         }
 
         container.register(AddTaskViewStateFactory.self) { resolver in

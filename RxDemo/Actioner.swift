@@ -4,10 +4,10 @@ class Actioner {
 
     private let fetchTasksSubject = PublishSubject<Void>()
     private let fetchTaskTypesSubject = PublishSubject<Void>()
-    private let selectTaskTypeSubject = PublishSubject<String>()
-    private let createTaskSubject = PublishSubject<String>()
-    private let completeTaskSubject = PublishSubject<String>()
-    private let removeTaskSubject = PublishSubject<String>()
+    private let selectTypeSubject = PublishSubject<Int>()
+    private let createTaskSubject = PublishSubject<Void>()
+    private let completeTaskSubject = PublishSubject<Int>()
+    private let removeTaskSubject = PublishSubject<Int>()
 
     // MARK: - Actions
 
@@ -19,20 +19,20 @@ class Actioner {
         fetchTaskTypesSubject.onNext(Void())
     }
 
-    func selectTaskType(with id: String) {
-        selectTaskTypeSubject.onNext(id)
+    func selectType(with index: Int) {
+        selectTypeSubject.onNext(index)
     }
 
-    func createTask(with taskTypeID: String) {
-        createTaskSubject.onNext(taskTypeID)
+    func createTask() {
+        createTaskSubject.onNext(Void())
     }
 
-    func completeTask(with id: String) {
-        completeTaskSubject.onNext(id)
+    func completeTask(with index: Int) {
+        completeTaskSubject.onNext(index)
     }
 
-    func removeTask(with id: String) {
-        removeTaskSubject.onNext(id)
+    func removeTask(with index: Int) {
+        removeTaskSubject.onNext(index)
     }
 
     // MARK: - Observables
@@ -45,19 +45,19 @@ class Actioner {
         return fetchTaskTypesSubject.asObservable()
     }
 
-    func selectTaskTypeActioned() -> Observable<String> {
-        return selectTaskTypeSubject.asObservable()
+    func selectTypeActioned() -> Observable<Int> {
+        return selectTypeSubject.asObservable()
     }
 
-    func createTaskActioned() -> Observable<String> {
+    func createTaskActioned() -> Observable<Void> {
         return createTaskSubject.asObservable()
     }
 
-    func completeTaskActioned() -> Observable<String> {
+    func completeTaskActioned() -> Observable<Int> {
         return completeTaskSubject.asObservable()
     }
 
-    func removeTaskActioned() -> Observable<String> {
+    func removeTaskActioned() -> Observable<Int> {
         return removeTaskSubject.asObservable()
     }
 

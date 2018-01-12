@@ -36,30 +36,26 @@ class TitleViewStateFactory {
 
 }
 
-class SelectTaskViewStateFactory {
+class SelectTypeViewStateFactory {
 
-    func makeSelections(with tapID: Int) -> SelectTaskSelectionViewState {
-        let viewState = SelectTaskSelectionViewState(
-            typeOneIsSelected: (tapID == 1),
-            typeTwoIsSelected: (tapID == 2)
+    func make(with types: [TaskType]) -> SelectTypeViewState {
+        let viewState = SelectTypeViewState(
+            typeOneTitle: types[0].name,
+            typeOneSelected: types[0].selected,
+            typeTwoTitle: types[1].name,
+            typeTwoSelected: types[1].selected
         )
         return viewState
     }
 
-    func makeTitles(with types: [TaskType]) -> SelectTaskTitlesViewState {
-        let typeNames = types.map { types in
-            return types.rawValue
-        }
-        let viewState = SelectTaskTitlesViewState(typeOneTitle: typeNames[0], typeTwoTitle: typeNames[1])
+    func makeLoading() -> SelectTypeViewState {
+        let viewState = SelectTypeViewState(
+            typeOneTitle: "",
+            typeOneSelected: false,
+            typeTwoTitle: "",
+            typeTwoSelected: false
+        )
         return viewState
-    }
-
-    func makeLoadingForTitles() -> SelectTaskTitlesViewState {
-        return SelectTaskTitlesViewState(typeOneTitle: "", typeTwoTitle: "")
-    }
-
-    func makeEmptyForSelection() -> SelectTaskSelectionViewState {
-        return SelectTaskSelectionViewState(typeOneIsSelected: false, typeTwoIsSelected: false)
     }
 
 }
@@ -112,12 +108,35 @@ class TaskViewStateFactory {
         return viewState
     }
 
-    func makeLoadingForButton(withTapID tapID: Int) -> TaskButtonViewState {
-        let completedButtonTitle = (tapID == 1) ? "Completing" : "Complete"
-        let removeButtonTitle = (tapID == 2) ? "Removing" : "Remove"
-        let viewState = TaskButtonViewState(
-            completeButtonTitle: completedButtonTitle,
-            removeButtonTitle: removeButtonTitle,
+    func makeCompleting(with index: Int, task: Task) -> TaskViewState {
+        let text = "\(index + 1)) \(task.name)"
+        let viewState = TaskViewState(
+            text: text,
+            completeButtonTitle: "Completing",
+            removeButtonTitle: "Remove",
+            completedButtonIsEnabled: false,
+            removeButtonIsEnabled: false
+        )
+        return viewState
+    }
+
+    func makeRemoving(with index: Int, task: Task) -> TaskViewState {
+        let text = "\(index + 1)) \(task.name)"
+        let viewState = TaskViewState(
+            text: text,
+            completeButtonTitle: task.completed ? "Completed" : "Complete",
+            removeButtonTitle: "Removing",
+            completedButtonIsEnabled: false,
+            removeButtonIsEnabled: false
+        )
+        return viewState
+    }
+
+    func makeLoading() -> TaskViewState {
+        let viewState = TaskViewState(
+            text: "",
+            completeButtonTitle: "",
+            removeButtonTitle: "",
             completedButtonIsEnabled: false,
             removeButtonIsEnabled: false
         )

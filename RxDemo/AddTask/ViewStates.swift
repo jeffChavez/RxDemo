@@ -18,9 +18,11 @@ struct TitleViewState {
     let isEnabled: Bool
 }
 
-struct SelectTaskTitlesViewState {
+struct SelectTypeViewState {
     let typeOneTitle: String
+    let typeOneSelected: Bool
     let typeTwoTitle: String
+    let typeTwoSelected: Bool
 }
 
 struct AddTaskViewState {
@@ -34,13 +36,6 @@ struct TaskTableViewState {
 
 struct TaskViewState {
     let text: String
-    let completeButtonTitle: String
-    let removeButtonTitle: String
-    let completedButtonIsEnabled: Bool
-    let removeButtonIsEnabled: Bool
-}
-
-struct TaskButtonViewState {
     let completeButtonTitle: String
     let removeButtonTitle: String
     let completedButtonIsEnabled: Bool

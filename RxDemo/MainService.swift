@@ -6,7 +6,7 @@ class MainService {
     private let actioner: Actioner
     private let disposeBag = DisposeBag()
 
-    private let tasksFetchedSubject = PublishSubject<[Task]>()
+    private let tasksFetchedSubject = BehaviorSubject<[Task]>(value: [])
     private let tasksTypesFetchedSubject = PublishSubject<[TaskType]>()
     private let taskCreatedSubject = PublishSubject<Void>()
     private let taskCompletedSubject = PublishSubject<Void>()
@@ -19,24 +19,12 @@ class MainService {
     init(actioner: Actioner) {
         self.actioner = actioner
 
-        listenForFetchTasksAction()
-        listenForFetchTaskTypesAction()
-        listenForCreateTaskAction()
-        listenForCompleteTaskAction()
-        listenForRemoveTaskAction()
-    }
-
-    // MARK: - Actions
-
-    private func listenForFetchTasksAction() {
         actioner.fetchTasksActioned().subscribe(onNext: {
             let tasks: [Task] = []
             self.tasks = tasks
             self.tasksFetchedSubject.onNext(tasks)
         }).disposed(by: disposeBag)
-    }
 
-    private func listenForFetchTaskTypesAction() {
         actioner.fetchTaskTypesActioned().subscribe(onNext: {
             let types = [
                 TaskType(id: UUID().uuidString, name: "Errand", selected: false),
@@ -45,28 +33,30 @@ class MainService {
             self.taskTypes = types
             self.tasksTypesFetchedSubject.onNext(types)
         }).disposed(by: disposeBag)
-    }
 
-    private func listenForCreateTaskAction() {
-        actioner.createTaskActioned().subscribe(onNext: { taskTypeID in
-            let id = UUID()
-            let optionalTaskType = self.taskTypes.first(where: { taskType -> Bool in
-                return taskType.id == taskTypeID
-            })
-            guard let taskType = optionalTaskType else {
-                return
-            }
-            let newTask = Task(id: id.uuidString, name: taskType.name, completed: false)
-            self.tasks.append(newTask)
-            self.tasksFetchedSubject.onNext(self.tasks)
-            self.taskCreatedSubject.onNext(Void())
-        }).disposed(by: disposeBag)
-    }
+        actioner.createTaskActioned()
+            .withLatestFrom(
+                Observable.combineLatest(
+                    actioner.selectTypeActioned(),
+                    taskTypesFetched()
+                )
+            )
+            .subscribe(onNext: { (index, taskTypes) in
+                let type = taskTypes[index]
+                let newTask = Task(
+                    id: UUID().uuidString,
+                    name: type.name,
+                    completed: false
+                )
+                self.tasks.append(newTask)
+                self.tasksFetchedSubject.onNext(self.tasks)
+                self.taskCreatedSubject.onNext(Void())
+            }).disposed(by: disposeBag)
 
-    private func listenForCompleteTaskAction() {
-        actioner.completeTaskActioned().subscribe(onNext: { id in
+        actioner.completeTaskActioned().subscribe(onNext: { index in
+            let taskToComplete = self.tasks[index]
             let completedTasksArray = self.tasks.map { (task) -> Task in
-                if task.id == id {
+                if taskToComplete.id == task.id {
                     let completedTask = Task(id: task.id, name: task.name, completed: true)
                     return completedTask
                 }
@@ -76,12 +66,11 @@ class MainService {
             self.tasksFetchedSubject.onNext(self.tasks)
             self.taskCompletedSubject.onNext(Void())
         }).disposed(by: disposeBag)
-    }
 
-    private func listenForRemoveTaskAction() {
-        actioner.removeTaskActioned().subscribe(onNext: { id in
+        actioner.removeTaskActioned().subscribe(onNext: { index in
+            let taskToRemove = self.tasks[index]
             let removedTasksArray = self.tasks.flatMap { (task) -> Task? in
-                if task.id == id {
+                if taskToRemove.id == task.id {
                     return nil
                 }
                 return task
@@ -94,8 +83,11 @@ class MainService {
 
     // MARK: - Observables
 
-    func tasksFetched() -> Observable<[Task]> {
-        return tasksFetchedSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+    func tasksFetched(delayed: Bool) -> Observable<[Task]> {
+        if delayed {
+            return tasksFetchedSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+        }
+        return tasksFetchedSubject.asObservable()
     }
 
     func taskTypesFetched() -> Observable<[TaskType]> {
