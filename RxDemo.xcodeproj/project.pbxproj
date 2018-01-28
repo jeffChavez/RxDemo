@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1F1A04F41FBB9FFB0023CB81 /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */; };
 		1F29E5761F95B10100256AC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F29E5751F95B10100256AC8 /* AppDelegate.swift */; };
-		1F29E5781F95B10100256AC8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F29E5771F95B10100256AC8 /* ViewController.swift */; };
+		1F29E5781F95B10100256AC8 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F29E5771F95B10100256AC8 /* Views.swift */; };
 		1F29E57B1F95B10100256AC8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F29E5791F95B10100256AC8 /* Main.storyboard */; };
 		1F29E57D1F95B10100256AC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F29E57C1F95B10100256AC8 /* Assets.xcassets */; };
 		1F29E5801F95B10100256AC8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F29E57E1F95B10100256AC8 /* LaunchScreen.storyboard */; };
@@ -18,6 +18,9 @@
 		1F3D98351FB634D60009B7CD /* MainAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3D98341FB634D60009B7CD /* MainAssembly.swift */; };
 		1F3D98371FB656670009B7CD /* UIView+Constaints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3D98361FB656670009B7CD /* UIView+Constaints.swift */; };
 		1F882EF31F986C6F003771A6 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F882EF21F986C6F003771A6 /* Models.swift */; };
+		1FF089C520145E5700440224 /* ViewStateFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF089C420145E5700440224 /* ViewStateFactory.swift */; };
+		1FF089C920145E7400440224 /* ModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF089C820145E7400440224 /* ModelFactory.swift */; };
+		1FF089CB20145E7A00440224 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF089CA20145E7A00440224 /* Service.swift */; };
 		3A4A38C823C54DE2BE398165 /* Pods_RxDemo_RxDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2518A5BF027C9837D4ABDE /* Pods_RxDemo_RxDemoTests.framework */; };
 		84BDF2019D306FD4E25979DC /* Pods_RxDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B33E2BFDA738584E4B1AAC /* Pods_RxDemoTests.framework */; };
 		A45A11759BDF111DD1FAABBC /* Pods_RxDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6AB16BAA07FBBFA154E65FC /* Pods_RxDemo.framework */; };
@@ -45,7 +48,7 @@
 		1F1A04F31FBB9FFB0023CB81 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
 		1F29E5721F95B10100256AC8 /* RxDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F29E5751F95B10100256AC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1F29E5771F95B10100256AC8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1F29E5771F95B10100256AC8 /* Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		1F29E57A1F95B10100256AC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1F29E57C1F95B10100256AC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1F29E57F1F95B10100256AC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -59,6 +62,9 @@
 		1F3D98341FB634D60009B7CD /* MainAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAssembly.swift; sourceTree = "<group>"; };
 		1F3D98361FB656670009B7CD /* UIView+Constaints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constaints.swift"; sourceTree = "<group>"; };
 		1F882EF21F986C6F003771A6 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		1FF089C420145E5700440224 /* ViewStateFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStateFactory.swift; sourceTree = "<group>"; };
+		1FF089C820145E7400440224 /* ModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFactory.swift; sourceTree = "<group>"; };
+		1FF089CA20145E7A00440224 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		2E2518A5BF027C9837D4ABDE /* Pods_RxDemo_RxDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxDemo_RxDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AFF4734845A40B4BD20076B /* Pods-RxDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxDemo/Pods-RxDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		62CF7BBECDB56E7ED405E9F6 /* Pods-RxDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxDemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxDemoTests/Pods-RxDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -125,7 +131,10 @@
 			children = (
 				1F29E5751F95B10100256AC8 /* AppDelegate.swift */,
 				1F3D98341FB634D60009B7CD /* MainAssembly.swift */,
-				1F29E5771F95B10100256AC8 /* ViewController.swift */,
+				1FF089CA20145E7A00440224 /* Service.swift */,
+				1FF089C820145E7400440224 /* ModelFactory.swift */,
+				1FF089C420145E5700440224 /* ViewStateFactory.swift */,
+				1F29E5771F95B10100256AC8 /* Views.swift */,
 				1F882EF21F986C6F003771A6 /* Models.swift */,
 				1F29E5791F95B10100256AC8 /* Main.storyboard */,
 				1F3D98361FB656670009B7CD /* UIView+Constaints.swift */,
@@ -415,8 +424,11 @@
 				1F882EF31F986C6F003771A6 /* Models.swift in Sources */,
 				1F3D98351FB634D60009B7CD /* MainAssembly.swift in Sources */,
 				1F3D98371FB656670009B7CD /* UIView+Constaints.swift in Sources */,
-				1F29E5781F95B10100256AC8 /* ViewController.swift in Sources */,
+				1F29E5781F95B10100256AC8 /* Views.swift in Sources */,
+				1FF089C520145E5700440224 /* ViewStateFactory.swift in Sources */,
+				1FF089CB20145E7A00440224 /* Service.swift in Sources */,
 				1F29E5761F95B10100256AC8 /* AppDelegate.swift in Sources */,
+				1FF089C920145E7400440224 /* ModelFactory.swift in Sources */,
 				1F1A04F41FBB9FFB0023CB81 /* UIColor+AppColors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

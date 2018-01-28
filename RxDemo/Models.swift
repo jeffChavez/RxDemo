@@ -4,6 +4,10 @@ struct Task {
     let name: String
 }
 
+struct ViewControllerState {
+    
+}
+
 struct HeaderViewState {
     let labelText: String
 }
@@ -37,14 +41,6 @@ struct FooterViewState {
 struct BannerViewState {
     let title: String
     let message: String
-    let state: BannerState
-
-    static func empty() -> BannerViewState {
-        return BannerViewState(title: "", message: "", state: .empty)
-    }
-}
-
-enum BannerState {
-    case success
-    case empty
+    let titleAlpha: Int
+    let messageAlpha: Int
 }
