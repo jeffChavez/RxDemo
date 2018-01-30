@@ -9,5 +9,4 @@ struct Task {
 struct TaskType {
     let id: String
     let name: String
-    let selected: Bool
 }

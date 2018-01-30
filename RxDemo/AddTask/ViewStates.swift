@@ -6,6 +6,10 @@ enum BannerState {
     case empty
 }
 
+struct ViewControllerState {
+    let showBanner: Bool
+}
+
 struct BannerViewState {
     let title: String
     let message: String
@@ -18,20 +22,20 @@ struct TitleViewState {
     let isEnabled: Bool
 }
 
-struct SelectTypeViewState {
-    let typeOneTitle: String
-    let typeOneSelected: Bool
-    let typeTwoTitle: String
-    let typeTwoSelected: Bool
+struct TypeViewState {
+    let id: String
+    let title: String
+    let isSelected: Bool
 }
 
-struct AddTaskViewState {
+struct AddViewState {
     let buttonText: String
     let isEnabled: Bool
 }
 
-struct TaskTableViewState {
+struct TableViewState {
     let emptyLabelText: String
+    let taskViewStates: [TaskViewState]
 }
 
 struct TaskViewState {

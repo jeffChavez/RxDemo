@@ -130,10 +130,10 @@
             </objects>
             <point key="canvasLocation" x="998" y="-198"/>
         </scene>
-        <!--Select TypeVC-->
+        <!--TypeVC-->
         <scene sceneID="kjI-Ku-yFe">
             <objects>
-                <viewController storyboardIdentifier="SelectTypeVC" id="x2f-eZ-gGE" customClass="SelectTypeVC" customModule="RxDemo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TypeVC" id="x2f-eZ-gGE" customClass="TypeVC" customModule="RxDemo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kO2-nT-Afu">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

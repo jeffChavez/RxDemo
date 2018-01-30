@@ -8,80 +8,71 @@ class MainAssembly: Assembly {
 
     func assemble(container: Container) {
 
-        container.register(MainService.self) { (resolver) in
-            let actioner = resolver.resolve(Actioner.self)!
-            let service = MainService(actioner: actioner)
+        container.register(Service.self) { (resolver) in
+            let service = Service()
             return service
         }
-
-        container.register(LocalService.self) { resolver in
-            let mainService = resolver.resolve(MainService.self)!
-            let actioner = resolver.resolve(Actioner.self)!
-            let service = LocalService(service: mainService, actioner: actioner)
-            return service
-        }
-
-        container.register(Actioner.self) { resolver in
-            return Actioner()
-        }.inObjectScope(.container)
 
         container.register(Kitchen.self) { (resolver) in
-            let actioner = resolver.resolve(Actioner.self)!
-            let mainService = resolver.resolve(MainService.self)!
-            let localService = resolver.resolve(LocalService.self)!
-            let bannerFactory = resolver.resolve(BannerViewStateFactory.self)!
-            let titleFactory = resolver.resolve(TitleViewStateFactory.self)!
-            let selectTypeFactory = resolver.resolve(SelectTypeViewStateFactory.self)!
-            let addTaskFactory = resolver.resolve(AddTaskViewStateFactory.self)!
-            let taskTableFactory = resolver.resolve(TaskTableViewStateFactory.self)!
-            let taskFactory = resolver.resolve(TaskViewStateFactory.self)!
+            let service = resolver.resolve(Service.self)!
+            let bannerViewStateFactory = resolver.resolve(BannerViewStateFactory.self)!
+            let titleViewStateFactory = resolver.resolve(TitleViewStateFactory.self)!
+            let typeViewStateFactory = resolver.resolve(TypeViewStateFactory.self)!
+            let addViewStateFactory = resolver.resolve(AddViewStateFactory.self)!
+            let tableViewStateFactory = resolver.resolve(TableViewStateFactory.self)!
             let kitchen = Kitchen(
-                actioner: actioner,
-                mainService: mainService,
-                localService: localService,
-                bannerViewStateFactory: bannerFactory,
-                titleViewStateFactory: titleFactory,
-                selectTypeViewStateFactory: selectTypeFactory,
-                addTaskViewStateFactory: addTaskFactory,
-                taskTableViewStateFactory: taskTableFactory,
-                taskViewStateFactory: taskFactory
+                service: service,
+                bannerViewStateFactory: bannerViewStateFactory,
+                titleViewStateFactory: titleViewStateFactory,
+                typeViewStateFactory: typeViewStateFactory,
+                addViewStateFactory: addViewStateFactory,
+                tableViewStateFactory: tableViewStateFactory
             )
             return kitchen
             }.inObjectScope(.container)
 
         container.storyboardInitCompleted(ViewController.self) { (resolver, vc) in
-            let actioner = resolver.resolve(Actioner.self)!
             let kitchen = resolver.resolve(Kitchen.self)!
-            let titleVC = self.storyboard.instantiateViewController(withIdentifier: "TitleVC") as! TitleVC
-            let selectTypeVC = self.storyboard.instantiateViewController(withIdentifier: "SelectTypeVC") as! SelectTypeVC
-            let addTaskVC = self.storyboard.instantiateViewController(withIdentifier: "AddTaskVC") as! AddTaskVC
+
             let bannerVC = self.storyboard.instantiateViewController(withIdentifier: "BannerVC") as! BannerVC
-            let taskTableView = resolver.resolve(TaskTableView.self)!
-            vc.inject(actioner: actioner, kitchen: kitchen, titleVC: titleVC, selectTypeVC: selectTypeVC, addTaskVC: addTaskVC, taskTableView: taskTableView, bannerVC: bannerVC)
+            kitchen.bannerViewStateDelegate = bannerVC
+            bannerVC.inject(kitchen: kitchen)
+
+            let titleVC = self.storyboard.instantiateViewController(withIdentifier: "TitleVC") as! TitleVC
+            kitchen.titleViewStateDelegate = titleVC
+            titleVC.inject(kitchen: kitchen)
+
+            let typeVC = self.storyboard.instantiateViewController(withIdentifier: "TypeVC") as! TypeVC
+            kitchen.typeViewStateDelegate = typeVC
+            typeVC.inject(kitchen: kitchen)
+
+            let addTaskVC = self.storyboard.instantiateViewController(withIdentifier: "AddTaskVC") as! AddTaskVC
+            kitchen.addViewStateDelegate = addTaskVC
+            addTaskVC.inject(kitchen: kitchen)
+
+            let viewFactory = resolver.resolve(ViewFactory.self)!
+            let tableView = TaskTableView(kitchen: kitchen, viewFactory: viewFactory)
+            kitchen.tableViewStateDelegate = tableView
+
+            vc.inject(kitchen: kitchen, titleVC: titleVC, typeVC: typeVC, addTaskVC: addTaskVC, taskTableView: tableView, bannerVC: bannerVC)
         }
 
         container.storyboardInitCompleted(TitleVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
             vc.inject(kitchen: kitchen)
+            kitchen.titleViewStateDelegate = vc
         }
 
-        container.storyboardInitCompleted(SelectTypeVC.self) { (resolver, vc) in
+        container.storyboardInitCompleted(TypeVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
-            let actioner = resolver.resolve(Actioner.self)!
-            vc.inject(kitchen: kitchen, actioner: actioner)
+            vc.inject(kitchen: kitchen)
+            kitchen.typeViewStateDelegate = vc
         }
 
         container.storyboardInitCompleted(AddTaskVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
-            let actioner = resolver.resolve(Actioner.self)!
-            vc.inject(kitchen: kitchen, actioner: actioner)
-        }
-
-        container.register(TaskTableView.self) { resolver in
-            let kitchen = resolver.resolve(Kitchen.self)!
-            let viewFactory = resolver.resolve(ViewFactory.self)!
-            let tableView = TaskTableView(kitchen: kitchen, viewFactory: viewFactory)
-            return tableView
+            vc.inject(kitchen: kitchen)
+            kitchen.addViewStateDelegate = vc
         }
 
         container.storyboardInitCompleted(BannerVC.self) { (resolver, vc) in
@@ -91,13 +82,11 @@ class MainAssembly: Assembly {
 
         container.storyboardInitCompleted(TaskVC.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
-            let actioner = resolver.resolve(Actioner.self)!
-            vc.inject(kitchen: kitchen, actioner: actioner)
+            vc.inject(kitchen: kitchen)
         }
 
         container.register(ViewFactory.self) { resolver in
-            let factory = ViewFactory(resolver: resolver, storyboard: self.storyboard)
-            return factory
+            return ViewFactory(resolver: resolver, storyboard: self.storyboard)
         }
 
         container.register(BannerViewStateFactory.self) { resolver in
@@ -108,20 +97,16 @@ class MainAssembly: Assembly {
             return TitleViewStateFactory()
         }
 
-        container.register(SelectTypeViewStateFactory.self) { resolver in
-            return SelectTypeViewStateFactory()
+        container.register(TypeViewStateFactory.self) { resolver in
+            return TypeViewStateFactory()
         }
 
-        container.register(AddTaskViewStateFactory.self) { resolver in
-            return AddTaskViewStateFactory()
+        container.register(AddViewStateFactory.self) { resolver in
+            return AddViewStateFactory()
         }
 
-        container.register(TaskTableViewStateFactory.self) { resolver in
-            return TaskTableViewStateFactory()
-        }
-
-        container.register(TaskViewStateFactory.self) { resolver in
-            return TaskViewStateFactory()
+        container.register(TableViewStateFactory.self) { resolver in
+            return TableViewStateFactory()
         }
     }
 

@@ -3,14 +3,13 @@ import RxSwift
 import RxCocoa
 import RxGesture
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ViewControllerStateDelegate {
 
     @IBOutlet private weak var containerStackView: UIStackView!
 
-    private var actioner: Actioner!
     private var kitchen: Kitchen!
     private var titleVC: TitleVC!
-    private var selectTypeVC: SelectTypeVC!
+    private var typeVC: TypeVC!
     private var addTaskVC: AddTaskVC!
     private var taskTableView: TaskTableView!
     private var bannerVC: BannerVC!
@@ -20,11 +19,10 @@ class ViewController: UIViewController {
     private var bannerTopConstraint: NSLayoutConstraint?
     private var bannerBottomConstraint: NSLayoutConstraint?
 
-    func inject(actioner: Actioner, kitchen: Kitchen, titleVC: TitleVC, selectTypeVC: SelectTypeVC, addTaskVC: AddTaskVC, taskTableView: TaskTableView, bannerVC: BannerVC) {
-        self.actioner = actioner
+    func inject(kitchen: Kitchen, titleVC: TitleVC, typeVC: TypeVC, addTaskVC: AddTaskVC, taskTableView: TaskTableView, bannerVC: BannerVC) {
         self.kitchen = kitchen
         self.titleVC = titleVC
-        self.selectTypeVC = selectTypeVC
+        self.typeVC = typeVC
         self.addTaskVC = addTaskVC
         self.taskTableView = taskTableView
         self.bannerVC = bannerVC
@@ -35,13 +33,17 @@ class ViewController: UIViewController {
         view.backgroundColor = .softWhite()
 
         containerStackView.addArrangedSubview(titleVC.view)
-        containerStackView.addArrangedSubview(selectTypeVC.view)
+        containerStackView.addArrangedSubview(typeVC.view)
         containerStackView.addArrangedSubview(addTaskVC.view)
         containerStackView.addArrangedSubview(taskTableView)
 
         setupBannerVC()
-        actioner.fetchTasks()
-        actioner.fetchTaskTypes()
+        kitchen.fetchTasks()
+        kitchen.fetchTaskTypes()
+    }
+
+    func kitchen(didMake viewState: ViewControllerState) {
+        showBanner(viewState.showBanner)
     }
 
     private func setupBannerVC() {
@@ -58,22 +60,11 @@ class ViewController: UIViewController {
         topConstraint.isActive = false
         bannerTopConstraint = topConstraint
 
-        kitchen.bannerViewState()
-            .subscribe(onNext: { viewState in
-                switch viewState.state {
-                case .success, .error:
-                    self.showBanner(true)
-                case .empty:
-                    self.showBanner(false)
-                }
-            }).disposed(by: disposeBag)
-
         let bannerTap = bannerVC.view.rx.tapGesture().when(.recognized)
         let viewTap = view.rx.tapGesture().when(.recognized)
-        Observable.merge(bannerTap, viewTap)
-            .subscribe(onNext: { _ in
-                self.showBanner(false)
-            }).disposed(by: disposeBag)
+        Observable.merge(bannerTap, viewTap).subscribe(onNext: { _ in
+            self.showBanner(false)
+        }).disposed(by: disposeBag)
     }
 
     private func showBanner(_ show: Bool) {

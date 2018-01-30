@@ -1,132 +1,140 @@
 import Foundation
 import RxSwift
 
+protocol ViewControllerStateDelegate: class {
+    func kitchen(didMake viewState: ViewControllerState)
+}
+
+protocol BannerViewStateDelegate: class {
+    func kitchen(didMake viewState: BannerViewState)
+}
+
+protocol TitleViewStateDelegate: class {
+    func kitchen(didMake viewState: TitleViewState)
+}
+
+protocol TypeViewStateDelegate: class {
+    func kitchen(didMake viewState: [TypeViewState])
+}
+
+protocol AddViewStateDelegate: class {
+    func kitchen(didMake viewState: AddViewState)
+}
+
+protocol TableViewStateDelegate: class {
+    func kitchen(didMake viewState: TableViewState)
+}
+
 class Kitchen {
 
-    private let actioner: Actioner
-    private let mainService: MainService
-    private let localService: LocalService
+    private let service: Service
+    private let disposeBag = DisposeBag()
+
+    weak var viewControllerStateDelegate: ViewControllerStateDelegate?
+    weak var bannerViewStateDelegate: BannerViewStateDelegate?
+    weak var titleViewStateDelegate: TitleViewStateDelegate?
+    weak var typeViewStateDelegate: TypeViewStateDelegate?
+    weak var addViewStateDelegate: AddViewStateDelegate?
+    weak var tableViewStateDelegate: TableViewStateDelegate?
 
     private let bannerViewStateFactory: BannerViewStateFactory
     private let titleViewStateFactory: TitleViewStateFactory
-    private let selectTypeViewStateFactory: SelectTypeViewStateFactory
-    private let addTaskViewStateFactory: AddTaskViewStateFactory
-    private let taskTableViewStateFactory: TaskTableViewStateFactory
-    private let taskViewStateFactory: TaskViewStateFactory
+    private let typeViewStateFactory: TypeViewStateFactory
+    private let addViewStateFactory: AddViewStateFactory
+    private let tableViewStateFactory: TableViewStateFactory
 
-    private let disposeBag = DisposeBag()
+    private var selectedTypeID: String?
+    private var tasks: [Task]?
+    private var taskTypes: [TaskType]?
 
     init(
-        actioner: Actioner,
-        mainService: MainService,
-        localService: LocalService,
+        service: Service,
         bannerViewStateFactory: BannerViewStateFactory,
         titleViewStateFactory: TitleViewStateFactory,
-        selectTypeViewStateFactory: SelectTypeViewStateFactory,
-        addTaskViewStateFactory: AddTaskViewStateFactory,
-        taskTableViewStateFactory: TaskTableViewStateFactory,
-        taskViewStateFactory: TaskViewStateFactory
+        typeViewStateFactory: TypeViewStateFactory,
+        addViewStateFactory: AddViewStateFactory,
+        tableViewStateFactory: TableViewStateFactory
         ) {
-        self.actioner = actioner
-        self.mainService = mainService
-        self.localService = localService
+        self.service = service
         self.bannerViewStateFactory = bannerViewStateFactory
         self.titleViewStateFactory = titleViewStateFactory
-        self.selectTypeViewStateFactory = selectTypeViewStateFactory
-        self.addTaskViewStateFactory = addTaskViewStateFactory
-        self.taskTableViewStateFactory = taskTableViewStateFactory
-        self.taskViewStateFactory = taskViewStateFactory
+        self.typeViewStateFactory = typeViewStateFactory
+        self.addViewStateFactory = addViewStateFactory
+        self.tableViewStateFactory = tableViewStateFactory
+
+        service.tasksFetched().subscribe(onNext: { tasks in
+            let titleViewState = self.titleViewStateFactory.make(with: tasks)
+            self.titleViewStateDelegate?.kitchen(didMake: titleViewState)
+
+            let addViewState = self.addViewStateFactory.make()
+            self.addViewStateDelegate?.kitchen(didMake: addViewState)
+
+            let tableViewState = self.tableViewStateFactory.make(with: tasks)
+            self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
+
+            self.tasks = tasks
+        }).disposed(by: disposeBag)
+
+        service.taskTypesFetched().subscribe(onNext: { types in
+            let typeViewStates = typeViewStateFactory.make(with: types)
+            self.typeViewStateDelegate?.kitchen(didMake: typeViewStates)
+
+            self.taskTypes = types
+        }).disposed(by: disposeBag)
+
+        service.taskCreated().subscribe(onNext: { _ in
+            let viewControllerState = ViewControllerState(showBanner: true)
+            self.viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
+
+            let addTaskViewState = self.addViewStateFactory.make()
+            self.addViewStateDelegate?.kitchen(didMake: addTaskViewState)
+
+            let bannerViewState = self.bannerViewStateFactory.make()
+            self.bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+        }).disposed(by: disposeBag)
+
+        service.taskCompleted().subscribe(onNext: { _ in
+
+        }).disposed(by: disposeBag)
+
+        service.taskRemoved().subscribe(onNext: { _ in
+
+        }).disposed(by: disposeBag)
     }
 
-    func bannerViewState() -> Observable<BannerViewState> {
-        return mainService.taskCreated()
-            .map {
-                return self.bannerViewStateFactory.make()
-            }
+    // MARK: - Actions
+
+    func fetchTasks() {
+        service.fetchTasks()
     }
 
-    func titleViewState() -> Observable<TitleViewState> {
-        return mainService.tasksFetched(delayed: true)
-            .map { tasks in
-                return self.titleViewStateFactory.make(with: tasks)
-            }
-            .startWith(titleViewStateFactory.makeLoading())
+    func fetchTaskTypes() {
+        service.fetchTaskTypes()
     }
 
-    func selectTypeViewState() -> Observable<SelectTypeViewState> {
-        return localService.tasksWithSelection()
-            .map { types in
-                return self.selectTypeViewStateFactory.make(with: types)
-            }
-            .startWith(selectTypeViewStateFactory.makeLoading())
+    func selectType(with id: String) {
+        selectedTypeID = id
+        guard let taskTypes = taskTypes else {
+            return
+        }
+        let viewState = typeViewStateFactory.make(with: taskTypes, selectedTypeID: id)
+        typeViewStateDelegate?.kitchen(didMake: viewState)
     }
 
-    func addTaskViewState() -> Observable<AddTaskViewState> {
-        return mainService.taskCreated()
-            .map {
-                self.addTaskViewStateFactory.makeInitial()
-            }
-            .startWith(addTaskViewStateFactory.makeInitial())
+    func createTask() {
+        guard let id = selectedTypeID else {
+            return
+        }
+
+        service.createTask(with: id)
     }
 
-    func taskTableViewState() -> Observable<TaskTableViewState> {
-        return mainService.tasksFetched(delayed: true)
-            .map { tasks in
-                self.taskTableViewStateFactory.make(with: tasks)
-            }
-            .startWith(taskTableViewStateFactory.makeLoading())
+    func completeTask(at index: Int) {
+
     }
 
-    func taskTableViewDataSource() -> Observable<[Int]> {
-        return mainService.tasksFetched(delayed: true)
-            .map { tasks in
-                self.taskTableViewStateFactory.makeDataSource(with: tasks)
-            }
-            .startWith([])
-    }
+    func removeTask(at index: Int) {
 
-    func taskViewState(for index: Int) -> Observable<TaskViewState> {
-        return mainService.tasksFetched(delayed: false)
-            .map { tasks in
-                guard tasks.count > index else {
-                    return self.taskViewStateFactory.makeLoading()
-                }
-                let task = tasks[index]
-                let viewState = self.taskViewStateFactory.make(with: index, task: task)
-                return viewState
-            }
-    }
-
-    func taskCompletingViewState(for index: Int) -> Observable<TaskViewState> {
-        return actioner.completeTaskActioned()
-            .filter { indexToMatch -> Bool in
-                return index == indexToMatch
-            }
-            .withLatestFrom(mainService.tasksFetched(delayed: false), resultSelector: { (index, tasks) -> TaskViewState in
-                guard tasks.count > index else {
-                    return self.taskViewStateFactory.makeLoading()
-                }
-
-                let task = tasks[index]
-                let viewState = self.taskViewStateFactory.makeCompleting(with: index, task: task)
-                return viewState
-            })
-    }
-
-    func taskRemovingViewState(for index: Int) -> Observable<TaskViewState> {
-        return actioner.removeTaskActioned()
-            .filter { indexToMatch -> Bool in
-                return index == indexToMatch
-            }
-            .withLatestFrom(mainService.tasksFetched(delayed: true), resultSelector: { (index, tasks) -> TaskViewState in
-                guard tasks.count > index else {
-                    return self.taskViewStateFactory.makeLoading()
-                }
-
-                let task = tasks[index]
-                let viewState = self.taskViewStateFactory.makeRemoving(with: index, task: task)
-                return viewState
-            })
     }
 
 }
