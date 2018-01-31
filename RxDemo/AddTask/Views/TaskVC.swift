@@ -30,11 +30,11 @@ class TaskVC: UIViewController {
         removeButton.isEnabled = viewState.removeButtonIsEnabled
 
         completeButton.rx.tap.subscribe(onNext: { _ in
-//            self.kitchen.completeTask(at: <#T##Int#>)
+            self.kitchen.completeTask(with: viewState.id)
         }).disposed(by: disposeBag)
 
         removeButton.rx.tap.subscribe(onNext: { _ in
-//            self.kitchen.removeTask(at: index)
+            self.kitchen.removeTask(with: viewState.id)
         }).disposed(by: disposeBag)
     }
 

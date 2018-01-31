@@ -62,43 +62,106 @@ class Kitchen {
         self.addViewStateFactory = addViewStateFactory
         self.tableViewStateFactory = tableViewStateFactory
 
-        service.tasksFetched().subscribe(onNext: { tasks in
-            let titleViewState = self.titleViewStateFactory.make(with: tasks)
-            self.titleViewStateDelegate?.kitchen(didMake: titleViewState)
+        service.tasksFetched().subscribe(onNext: { result in
+            switch result {
+            case .loading:
+                let addViewState = self.addViewStateFactory.make()
+                self.addViewStateDelegate?.kitchen(didMake: addViewState)
 
-            let addViewState = self.addViewStateFactory.make()
-            self.addViewStateDelegate?.kitchen(didMake: addViewState)
+                let tableViewState = self.tableViewStateFactory.makeLoading()
+                self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
 
-            let tableViewState = self.tableViewStateFactory.make(with: tasks)
-            self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
+            case .success(let tasks):
+                let titleViewState = self.titleViewStateFactory.make(with: tasks)
+                self.titleViewStateDelegate?.kitchen(didMake: titleViewState)
 
-            self.tasks = tasks
+                let addViewState = self.addViewStateFactory.make()
+                self.addViewStateDelegate?.kitchen(didMake: addViewState)
+
+                let tableViewState = self.tableViewStateFactory.make(with: tasks)
+                self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
+
+                self.tasks = tasks
+            case .error(_):
+                break
+            }
         }).disposed(by: disposeBag)
 
-        service.taskTypesFetched().subscribe(onNext: { types in
-            let typeViewStates = typeViewStateFactory.make(with: types)
-            self.typeViewStateDelegate?.kitchen(didMake: typeViewStates)
+        service.taskTypesFetched().subscribe(onNext: { result in
+            switch result {
+            case .loading:
+                let titleViewState = self.titleViewStateFactory.makeLoading()
+                self.titleViewStateDelegate?.kitchen(didMake: titleViewState)
+                
+                let typeViewStates = typeViewStateFactory.makeLoading()
+                self.typeViewStateDelegate?.kitchen(didMake: typeViewStates)
 
-            self.taskTypes = types
+            case .success(let types):
+                let typeViewStates = typeViewStateFactory.make(with: types)
+                self.typeViewStateDelegate?.kitchen(didMake: typeViewStates)
+
+                self.taskTypes = types
+            case .error(_):
+                break
+            }
         }).disposed(by: disposeBag)
 
-        service.taskCreated().subscribe(onNext: { _ in
-            let viewControllerState = ViewControllerState(showBanner: true)
-            self.viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
+        service.taskCreated().subscribe(onNext: { result in
+            switch result {
+            case .loading:
+                let addTaskViewState = self.addViewStateFactory.makeLoading()
+                self.addViewStateDelegate?.kitchen(didMake: addTaskViewState)
 
-            let addTaskViewState = self.addViewStateFactory.make()
-            self.addViewStateDelegate?.kitchen(didMake: addTaskViewState)
+            case .success(_):
+                let viewControllerState = ViewControllerState(showBanner: true)
+                self.viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
 
-            let bannerViewState = self.bannerViewStateFactory.make()
-            self.bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+                let addTaskViewState = self.addViewStateFactory.make()
+                self.addViewStateDelegate?.kitchen(didMake: addTaskViewState)
+
+                let bannerViewState = self.bannerViewStateFactory.make()
+                self.bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+            case .error(_):
+                break
+            }
         }).disposed(by: disposeBag)
 
-        service.taskCompleted().subscribe(onNext: { _ in
+        service.taskCompleted().subscribe(onNext: { result in
+            switch result {
+            case .loading(let selectedTaskID):
+                guard
+                    let selectedTaskID = selectedTaskID,
+                    let tasks = self.tasks
+                else {
+                    return
+                }
 
+                let tableViewState = self.tableViewStateFactory.makeCompleting(with: selectedTaskID, tasks: tasks)
+                self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
+            case .success(_):
+                break
+            case .error(_):
+                break
+            }
         }).disposed(by: disposeBag)
 
-        service.taskRemoved().subscribe(onNext: { _ in
+        service.taskRemoved().subscribe(onNext: { result in
+            switch result {
+            case .loading(let selectedTaskID):
+                guard
+                    let selectedTaskID = selectedTaskID,
+                    let tasks = self.tasks
+                else {
+                        return
+                }
 
+                let tableViewState = self.tableViewStateFactory.makeRemoving(with: selectedTaskID, tasks: tasks)
+                self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
+            case .success(_):
+                break
+            case .error(_):
+                break
+            }
         }).disposed(by: disposeBag)
     }
 
@@ -125,16 +188,15 @@ class Kitchen {
         guard let id = selectedTypeID else {
             return
         }
-
         service.createTask(with: id)
     }
 
-    func completeTask(at index: Int) {
-
+    func completeTask(with selectedTaskID: String) {
+        service.completeTask(with: selectedTaskID)
     }
 
-    func removeTask(at index: Int) {
-
+    func removeTask(with selectedTaskID: String) {
+        service.removeTask(with: selectedTaskID)
     }
 
 }

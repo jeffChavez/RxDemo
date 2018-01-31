@@ -8,8 +8,13 @@ class MainAssembly: Assembly {
 
     func assemble(container: Container) {
 
+        container.register(Database.self) { resolver in
+            return Database()
+        }.inObjectScope(.container)
+
         container.register(Service.self) { (resolver) in
-            let service = Service()
+            let database = resolver.resolve(Database.self)!
+            let service = Service(database: database)
             return service
         }
 
@@ -29,7 +34,7 @@ class MainAssembly: Assembly {
                 tableViewStateFactory: tableViewStateFactory
             )
             return kitchen
-            }.inObjectScope(.container)
+        }
 
         container.storyboardInitCompleted(ViewController.self) { (resolver, vc) in
             let kitchen = resolver.resolve(Kitchen.self)!
@@ -50,43 +55,32 @@ class MainAssembly: Assembly {
             kitchen.addViewStateDelegate = addTaskVC
             addTaskVC.inject(kitchen: kitchen)
 
-            let viewFactory = resolver.resolve(ViewFactory.self)!
+            let viewFactory = ViewFactory(kitchen: kitchen, storyboard: self.storyboard)
             let tableView = TaskTableView(kitchen: kitchen, viewFactory: viewFactory)
             kitchen.tableViewStateDelegate = tableView
 
+            kitchen.viewControllerStateDelegate = vc
             vc.inject(kitchen: kitchen, titleVC: titleVC, typeVC: typeVC, addTaskVC: addTaskVC, taskTableView: tableView, bannerVC: bannerVC)
         }
 
         container.storyboardInitCompleted(TitleVC.self) { (resolver, vc) in
-            let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
-            kitchen.titleViewStateDelegate = vc
+
         }
 
         container.storyboardInitCompleted(TypeVC.self) { (resolver, vc) in
-            let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
-            kitchen.typeViewStateDelegate = vc
+
         }
 
         container.storyboardInitCompleted(AddTaskVC.self) { (resolver, vc) in
-            let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
-            kitchen.addViewStateDelegate = vc
+
         }
 
         container.storyboardInitCompleted(BannerVC.self) { (resolver, vc) in
-            let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
+
         }
 
         container.storyboardInitCompleted(TaskVC.self) { (resolver, vc) in
-            let kitchen = resolver.resolve(Kitchen.self)!
-            vc.inject(kitchen: kitchen)
-        }
-
-        container.register(ViewFactory.self) { resolver in
-            return ViewFactory(resolver: resolver, storyboard: self.storyboard)
+            
         }
 
         container.register(BannerViewStateFactory.self) { resolver in

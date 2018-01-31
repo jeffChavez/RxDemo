@@ -39,6 +39,7 @@ struct TableViewState {
 }
 
 struct TaskViewState {
+    let id: String
     let text: String
     let completeButtonTitle: String
     let removeButtonTitle: String

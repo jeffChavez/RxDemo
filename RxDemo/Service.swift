@@ -1,96 +1,156 @@
 import Foundation
 import RxSwift
 
+enum Result<T> {
+    case loading(String?)
+    case success(T)
+    case error(Error)
+}
+
+enum ServiceError {
+    case bad
+}
+
 class Service {
 
-    private let tasksFetchedSubject = PublishSubject<[Task]>()
-    private let tasksTypesFetchedSubject = PublishSubject<[TaskType]>()
-    private let taskCreatedSubject = PublishSubject<Void>()
-    private let taskCompletedSubject = PublishSubject<Void>()
-    private let taskRemovedSubject = PublishSubject<Void>()
+    private let disposeBag = DisposeBag()
+    private let tasksFetchedSubject = PublishSubject<Result<[Task]>>()
+    private let tasksTypesFetchedSubject = PublishSubject<Result<[TaskType]>>()
+    private let taskCreatedSubject = PublishSubject<Result<Void>>()
+    private let taskCompletedSubject = PublishSubject<Result<Void>>()
+    private let taskRemovedSubject = PublishSubject<Result<Void>>()
 
-    private let kDelay = 1.5
-    private var tasks = [Task]()
-    private var taskTypes = [TaskType]()
+    private let database: Database
+
+    init(database: Database) {
+        self.database = database
+    }
 
     func fetchTasks() {
-        tasks = [Task]()
-        tasksFetchedSubject.onNext(tasks)
+        tasksFetchedSubject.onNext(.loading(nil))
+        database.fetchTasks()
+            .subscribe { event in
+                switch event {
+                case .success(let tasks):
+                    self.tasksFetchedSubject.onNext(.success(tasks))
+
+                case .error(let error):
+                    self.handle(error)
+                }
+            }.disposed(by: disposeBag)
     }
 
     func fetchTaskTypes() {
-        let types = [
-            TaskType(id: UUID().uuidString, name: "Errand"),
-            TaskType(id: UUID().uuidString, name: "Gym")
-        ]
-        taskTypes = types
-        tasksTypesFetchedSubject.onNext(types)
+        tasksTypesFetchedSubject.onNext(.loading(nil))
+        database.fetchTaskTypes()
+            .subscribe { event in
+                switch event {
+                case .success(let types):
+                    self.tasksTypesFetchedSubject.onNext(.success(types))
+
+                case .error(let error):
+                    self.handle(error)
+                }
+            }.disposed(by: disposeBag)
     }
 
     func createTask(with selectedTypeID: String) {
-        guard let selectedType = taskTypes.first(where: { type in selectedTypeID == type.id }) else {
-            return
-        }
-        let newTask = Task(
-            id: UUID().uuidString,
-            name: selectedType.name,
-            completed: false
-        )
-        tasks.append(newTask)
-        tasksFetchedSubject.onNext(tasks)
-        taskCreatedSubject.onNext(Void())
+        taskCreatedSubject.onNext(.loading(selectedTypeID))
+        database.createTask(with: selectedTypeID)
+            .flatMap { _ -> Single<[Task]> in
+                self.tasksFetchedSubject.onNext(.loading(nil))
+                return self.database.fetchTasks()
+            }
+            .subscribe { event in
+                switch event {
+                case .success(let tasks):
+                    self.taskCreatedSubject.onNext(.success(Void()))
+                    self.tasksFetchedSubject.onNext(.success(tasks))
+
+                case .error(let error):
+                    self.handle(error)
+                }
+            }.disposed(by: disposeBag)
     }
 
     func completeTask(with selectedTaskID: String) {
-        guard let taskToComplete = tasks.first(where: { task in selectedTaskID == task.id }) else {
-            return
-        }
-        let completedTasksArray = tasks.map { (task) -> Task in
-            if taskToComplete.id == task.id {
-                let completedTask = Task(id: task.id, name: task.name, completed: true)
-                return completedTask
+        taskCompletedSubject.onNext(.loading(selectedTaskID))
+        database.completeTask(with: selectedTaskID)
+            .flatMap { _ -> Single<[Task]> in
+                self.tasksFetchedSubject.onNext(.loading(nil))
+                return self.database.fetchTasks()
             }
-            return task
-        }
-        tasks = completedTasksArray
-        tasksFetchedSubject.onNext(tasks)
-        taskCompletedSubject.onNext(Void())
+            .subscribe { event in
+                switch event {
+                case .success(let tasks):
+                    self.taskCompletedSubject.onNext(.success(Void()))
+                    self.tasksFetchedSubject.onNext(.success(tasks))
+
+                case .error(let error):
+                    self.handle(error)
+                }
+            }.disposed(by: disposeBag)
     }
 
     func removeTask(with selectedTaskID: String) {
-        guard let taskToRemove = tasks.first(where: { task in selectedTaskID == task.id }) else {
-            return
-        }
-        let removedTasksArray = tasks.flatMap { (task) -> Task? in
-            if taskToRemove.id == task.id {
-                return nil
+        taskRemovedSubject.onNext(.loading(selectedTaskID))
+        database.removeTask(with: selectedTaskID)
+            .flatMap { _ -> Single<[Task]> in
+                self.tasksFetchedSubject.onNext(.loading(nil))
+                return self.database.fetchTasks()
             }
-            return task
-        }
-        tasks = removedTasksArray
-        tasksFetchedSubject.onNext(tasks)
-        taskRemovedSubject.onNext(Void())
+            .subscribe { event in
+                switch event {
+                case .success(let tasks):
+                    self.taskRemovedSubject.onNext(.success(Void()))
+                    self.tasksFetchedSubject.onNext(.success(tasks))
+
+                case .error(let error):
+                    self.handle(error)
+                }
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - Observables
 
-    func tasksFetched() -> Observable<[Task]> {
-        return tasksFetchedSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+    func tasksFetched() -> Observable<Result<[Task]>> {
+        return tasksFetchedSubject.asObservable()
     }
 
-    func taskTypesFetched() -> Observable<[TaskType]> {
-        return tasksTypesFetchedSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+    func taskTypesFetched() -> Observable<Result<[TaskType]>> {
+        return tasksTypesFetchedSubject.asObservable()
     }
 
-    func taskCreated() -> Observable<Void> {
-        return taskCreatedSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+    func taskCreated() -> Observable<Result<Void>> {
+        return taskCreatedSubject.asObservable()
     }
 
-    func taskCompleted() -> Observable<Void> {
-        return taskCompletedSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+    func taskCompleted() -> Observable<Result<Void>> {
+        return taskCompletedSubject.asObservable()
     }
 
-    func taskRemoved() -> Observable<Void> {
-        return taskRemovedSubject.asObservable().delay(kDelay, scheduler: MainScheduler.instance)
+    func taskRemoved() -> Observable<Result<Void>> {
+        return taskRemovedSubject.asObservable()
+    }
+
+    // MARK: - Helpers
+
+    private func handle(_ error: Error) {
+        guard let error = error as? DatabaseError else {
+            return
+        }
+
+        switch error {
+        case .failedToFetchTasks:
+            tasksFetchedSubject.onNext(.error(error))
+        case .failedToFetchTaskTypes:
+            tasksTypesFetchedSubject.onNext(.error(error))
+        case .failedToCreateTask:
+            taskCreatedSubject.onNext(.error(error))
+        case .failedToCompleteTask:
+            taskCompletedSubject.onNext(.error(error))
+        case .failedToRemoveTask:
+            taskRemovedSubject.onNext(.error(error))
+        }
     }
 }
