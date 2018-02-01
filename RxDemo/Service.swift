@@ -35,7 +35,6 @@ class Service {
                 switch event {
                 case .success(let tasks):
                     self.tasksFetchedSubject.onNext(.success(tasks))
-
                 case .error(let error):
                     self.handle(error)
                 }
@@ -49,7 +48,6 @@ class Service {
                 switch event {
                 case .success(let types):
                     self.tasksTypesFetchedSubject.onNext(.success(types))
-
                 case .error(let error):
                     self.handle(error)
                 }
@@ -59,15 +57,12 @@ class Service {
     func createTask(with selectedTypeID: String) {
         taskCreatedSubject.onNext(.loading(selectedTypeID))
         database.createTask(with: selectedTypeID)
-            .flatMap { _ -> Single<[Task]> in
-                return self.database.fetchTasks()
-            }
+            .flatMap { self.database.fetchTasks() }
             .subscribe { event in
                 switch event {
                 case .success(let tasks):
                     self.taskCreatedSubject.onNext(.success(Void()))
                     self.tasksFetchedSubject.onNext(.success(tasks))
-
                 case .error(let error):
                     self.handle(error)
                 }
@@ -77,15 +72,12 @@ class Service {
     func completeTask(with selectedTaskID: String) {
         taskCompletedSubject.onNext(.loading(selectedTaskID))
         database.completeTask(with: selectedTaskID)
-            .flatMap { _ -> Single<[Task]> in
-                return self.database.fetchTasks()
-            }
+            .flatMap { self.database.fetchTasks() }
             .subscribe { event in
                 switch event {
                 case .success(let tasks):
                     self.taskCompletedSubject.onNext(.success(Void()))
                     self.tasksFetchedSubject.onNext(.success(tasks))
-
                 case .error(let error):
                     self.handle(error)
                 }
@@ -95,15 +87,12 @@ class Service {
     func removeTask(with selectedTaskID: String) {
         taskRemovedSubject.onNext(.loading(selectedTaskID))
         database.removeTask(with: selectedTaskID)
-            .flatMap { _ -> Single<[Task]> in
-                return self.database.fetchTasks()
-            }
+            .flatMap { self.database.fetchTasks() }
             .subscribe { event in
                 switch event {
                 case .success(let tasks):
                     self.taskRemovedSubject.onNext(.success(Void()))
                     self.tasksFetchedSubject.onNext(.success(tasks))
-
                 case .error(let error):
                     self.handle(error)
                 }
