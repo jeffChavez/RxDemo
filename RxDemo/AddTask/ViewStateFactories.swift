@@ -1,12 +1,20 @@
 import Foundation
 
 class BannerViewStateFactory {
-    func make() -> BannerViewState {
-        return BannerViewState(title: "Success", message: "You have added a new task!", state: .success)
+    func makeCreated() -> BannerViewState {
+        return BannerViewState(title: "Weeeee", message: "You have created a new task", state: .success)
     }
 
     func makeError() -> BannerViewState {
-        return BannerViewState(title: "Error", message: "You must select a task to add", state: .error)
+        return BannerViewState(title: "Oops", message: "You must select a task to create", state: .error)
+    }
+
+    func makeCompleted() -> BannerViewState {
+        return BannerViewState(title: "Hurray", message: "You completed a task", state: .success)
+    }
+
+    func makeRemoved() -> BannerViewState {
+        return BannerViewState(title: "Doh", message: "You removed a task", state: .success)
     }
 }
 
@@ -24,7 +32,7 @@ class TitleViewStateFactory {
     }
 
     func makeEmpty() -> TitleViewState {
-        return TitleViewState(titleText: "TO DO LIST", bodyText: "Select a task to add!", isEnabled: true)
+        return TitleViewState(titleText: "TO DO LIST", bodyText: "Select a task to create!", isEnabled: true)
     }
 
     func makeLoading() -> TitleViewState {
@@ -35,7 +43,7 @@ class TitleViewStateFactory {
 class TypeViewStateFactory {
     func make(with types: [TaskType]) -> [TypeViewState] {
         let viewStates = types.map { type -> TypeViewState in
-            let viewState = TypeViewState(id: type.id, title: type.name, isSelected: false)
+            let viewState = TypeViewState(id: type.id, title: type.name, isSelected: false, isEnabled: true)
             return viewState
         }
         return viewStates
@@ -43,8 +51,8 @@ class TypeViewStateFactory {
 
     func makeLoading() -> [TypeViewState] {
         let viewStates = [
-            TypeViewState(id: "", title: "...", isSelected: false),
-            TypeViewState(id: "", title: "...", isSelected: false)
+            TypeViewState(id: "", title: "...", isSelected: false, isEnabled: false),
+            TypeViewState(id: "", title: "...", isSelected: false, isEnabled: false)
         ]
         return viewStates
     }
@@ -52,10 +60,10 @@ class TypeViewStateFactory {
     func make(with types: [TaskType], selectedTypeID: String) -> [TypeViewState] {
         let viewStates = types.map { type -> TypeViewState in
             if type.id == selectedTypeID {
-                return TypeViewState(id: type.id, title: type.name, isSelected: true)
+                return TypeViewState(id: type.id, title: type.name, isSelected: true, isEnabled: true)
             }
 
-            return TypeViewState(id: type.id, title: type.name, isSelected: false)
+            return TypeViewState(id: type.id, title: type.name, isSelected: false, isEnabled: true)
         }
         return viewStates
     }
@@ -63,27 +71,18 @@ class TypeViewStateFactory {
 
 class AddViewStateFactory {
     func make() -> AddViewState {
-        return AddViewState(buttonText: "Add task", isEnabled: true)
+        return AddViewState(buttonText: "Create task", isEnabled: true)
     }
 
     func makeLoading() -> AddViewState {
-        return AddViewState(buttonText: "Adding...", isEnabled: false)
+        return AddViewState(buttonText: "Creating...", isEnabled: false)
     }
 }
 
 class TableViewStateFactory {
     func make(with tasks: [Task]) -> TableViewState {
         let taskViewStates = tasks.map { task -> TaskViewState in
-            let text = task.name
-            let viewState = TaskViewState(
-                id: task.id,
-                text: text,
-                completeButtonTitle: task.completed ? "Completed" : "Complete",
-                removeButtonTitle: "Remove",
-                completedButtonIsEnabled: task.completed ? false : true,
-                removeButtonIsEnabled: true
-            )
-            return viewState
+            return makeDefaultTaskViewState(with: task)
         }
 
         let text = (tasks.count == 0) ? "You have no tasks to show" : ""
@@ -91,7 +90,10 @@ class TableViewStateFactory {
         return viewState
     }
 
-    func makeCompleting(with selectedTaskID: String, tasks: [Task]) -> TableViewState {
+    func makeCompleting(with selectedTaskID: String?, tasks: [Task]?) -> TableViewState {
+        guard let selectedTaskID = selectedTaskID, let tasks = tasks else {
+            fatalError("bad")
+        }
         let taskViewStates = tasks.map { task -> TaskViewState in
             if task.id == selectedTaskID {
                 let completingViewState = TaskViewState(
@@ -104,15 +106,7 @@ class TableViewStateFactory {
                 )
                 return completingViewState
             }
-            let viewState = TaskViewState(
-                id: task.id,
-                text: task.name,
-                completeButtonTitle: task.completed ? "Completed" : "Complete",
-                removeButtonTitle: "Remove",
-                completedButtonIsEnabled: task.completed ? false : true,
-                removeButtonIsEnabled: true
-            )
-            return viewState
+            return makeDefaultTaskViewState(with: task)
         }
 
         let text = (tasks.count == 0) ? "You have no tasks to show" : ""
@@ -120,7 +114,10 @@ class TableViewStateFactory {
         return viewState
     }
 
-    func makeRemoving(with selectedTaskID: String, tasks: [Task]) -> TableViewState {
+    func makeRemoving(with selectedTaskID: String?, tasks: [Task]?) -> TableViewState {
+        guard let selectedTaskID = selectedTaskID, let tasks = tasks else {
+            fatalError("bad")
+        }
         let taskViewStates = tasks.map { task -> TaskViewState in
             if task.id == selectedTaskID {
                 let removingViewState = TaskViewState(
@@ -133,15 +130,7 @@ class TableViewStateFactory {
                 )
                 return removingViewState
             }
-            let viewState = TaskViewState(
-                id: task.id,
-                text: task.name,
-                completeButtonTitle: task.completed ? "Completed" : "Complete",
-                removeButtonTitle: "Remove",
-                completedButtonIsEnabled: task.completed ? false : true,
-                removeButtonIsEnabled: true
-            )
-            return viewState
+            return makeDefaultTaskViewState(with: task)
         }
 
         let text = (tasks.count == 0) ? "You have no tasks to show" : ""
@@ -150,6 +139,18 @@ class TableViewStateFactory {
     }
 
     func makeLoading() -> TableViewState {
-        return TableViewState(emptyLabelText: "loading tasks...", taskViewStates: [])
+        return TableViewState(emptyLabelText: "fetching tasks...", taskViewStates: [])
+    }
+
+    private func makeDefaultTaskViewState(with task: Task) -> TaskViewState {
+        let viewState = TaskViewState(
+            id: task.id,
+            text: task.name,
+            completeButtonTitle: task.completed ? "Completed" : "Complete",
+            removeButtonTitle: "Remove",
+            completedButtonIsEnabled: task.completed ? false : true,
+            removeButtonIsEnabled: true
+        )
+        return viewState
     }
 }

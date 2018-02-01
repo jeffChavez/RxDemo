@@ -14,7 +14,8 @@ class AddTaskVC: UIViewController, AddViewStateDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.layer.cornerRadius = 5
+        
         button.rx.tap.subscribe(onNext: { _ in
             self.kitchen.createTask()
         }).disposed(by: disposeBag)

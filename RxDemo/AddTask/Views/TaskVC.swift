@@ -45,7 +45,7 @@ class TaskVC: UIViewController {
         lineView.constrainLeading(to: view, constant: 16)
         lineView.constrainTrailing(to: view, constant: 16)
         lineView.constrainBottom(to: view)
-        lineView.constrainHeight(constant: 1.75)
+        lineView.constrainHeight(constant: 1.5)
         lineView.backgroundColor = .softWhite()
     }
 

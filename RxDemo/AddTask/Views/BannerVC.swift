@@ -15,6 +15,7 @@ class BannerVC: UIViewController, BannerViewStateDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.layer.cornerRadius = 5
 
         messageLabel.textColor = .white
         titleLabel.textColor = .white

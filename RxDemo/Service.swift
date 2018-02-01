@@ -26,6 +26,8 @@ class Service {
         self.database = database
     }
 
+    // MARK: - Actions
+
     func fetchTasks() {
         tasksFetchedSubject.onNext(.loading(nil))
         database.fetchTasks()
@@ -58,7 +60,6 @@ class Service {
         taskCreatedSubject.onNext(.loading(selectedTypeID))
         database.createTask(with: selectedTypeID)
             .flatMap { _ -> Single<[Task]> in
-                self.tasksFetchedSubject.onNext(.loading(nil))
                 return self.database.fetchTasks()
             }
             .subscribe { event in
@@ -77,7 +78,6 @@ class Service {
         taskCompletedSubject.onNext(.loading(selectedTaskID))
         database.completeTask(with: selectedTaskID)
             .flatMap { _ -> Single<[Task]> in
-                self.tasksFetchedSubject.onNext(.loading(nil))
                 return self.database.fetchTasks()
             }
             .subscribe { event in
@@ -96,7 +96,6 @@ class Service {
         taskRemovedSubject.onNext(.loading(selectedTaskID))
         database.removeTask(with: selectedTaskID)
             .flatMap { _ -> Single<[Task]> in
-                self.tasksFetchedSubject.onNext(.loading(nil))
                 return self.database.fetchTasks()
             }
             .subscribe { event in

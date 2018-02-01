@@ -26,6 +26,7 @@ struct TypeViewState {
     let id: String
     let title: String
     let isSelected: Bool
+    let isEnabled: Bool
 }
 
 struct AddViewState {

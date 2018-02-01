@@ -17,6 +17,7 @@ class TypeVC: UIViewController, TypeViewStateDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.layer.cornerRadius = 5
 
         Observable.merge(
             button1.rx.tap.map { 0 },
@@ -34,7 +35,10 @@ class TypeVC: UIViewController, TypeViewStateDelegate {
         self.viewStates = viewStates
         button1.setTitle(viewStates[0].title, for: .normal)
         button1.isSelected = viewStates[0].isSelected
+        button1.isEnabled = viewStates[0].isEnabled
+
         button2.setTitle(viewStates[1].title, for: .normal)
         button2.isSelected = viewStates[1].isSelected
+        button2.isEnabled = viewStates[1].isEnabled
     }
 }

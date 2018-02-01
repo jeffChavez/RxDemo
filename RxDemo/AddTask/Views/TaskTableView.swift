@@ -18,6 +18,7 @@ class TaskTableView: UITableView, TableViewStateDelegate, UITableViewDataSource,
         self.kitchen = kitchen
         self.viewFactory = viewFactory
 
+        layer.cornerRadius = 5
         dataSource = self
         delegate = self
         register(UITableViewCell.self, forCellReuseIdentifier: "CELL")

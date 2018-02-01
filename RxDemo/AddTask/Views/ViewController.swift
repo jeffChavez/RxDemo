@@ -17,7 +17,6 @@ class ViewController: UIViewController, ViewControllerStateDelegate {
     private let disposeBag = DisposeBag()
 
     private var bannerTopConstraint: NSLayoutConstraint?
-    private var bannerBottomConstraint: NSLayoutConstraint?
 
     func inject(kitchen: Kitchen, titleVC: TitleVC, typeVC: TypeVC, addTaskVC: AddTaskVC, taskTableView: TaskTableView, bannerVC: BannerVC) {
         self.kitchen = kitchen
@@ -38,8 +37,7 @@ class ViewController: UIViewController, ViewControllerStateDelegate {
         containerStackView.addArrangedSubview(taskTableView)
 
         setupBannerVC()
-        kitchen.fetchTasks()
-        kitchen.fetchTaskTypes()
+        kitchen.fetch()
     }
 
     func kitchen(didMake viewState: ViewControllerState) {
@@ -52,24 +50,21 @@ class ViewController: UIViewController, ViewControllerStateDelegate {
         bannerVC.view.constrainTrailing(to: view)
         bannerVC.view.constrainHeight(constant: 100)
 
-        let bottomConstraint = bannerVC.view.bottomAnchor.constraint(equalTo: view.topAnchor)
-        bottomConstraint.isActive = true
-        bannerBottomConstraint = bottomConstraint
-
         let topConstraint = bannerVC.view.topAnchor.constraint(equalTo: view.topAnchor)
-        topConstraint.isActive = false
+        topConstraint.isActive = true
         bannerTopConstraint = topConstraint
+        bannerTopConstraint?.constant = bannerVC.view.frame.height * -1
 
-        let bannerTap = bannerVC.view.rx.tapGesture().when(.recognized)
-        let viewTap = view.rx.tapGesture().when(.recognized)
-        Observable.merge(bannerTap, viewTap).subscribe(onNext: { _ in
+        Observable.merge(
+            bannerVC.view.rx.tapGesture().when(.recognized),
+            view.rx.tapGesture().when(.recognized)
+        ).subscribe(onNext: { _ in
             self.showBanner(false)
         }).disposed(by: disposeBag)
     }
 
     private func showBanner(_ show: Bool) {
-        bannerBottomConstraint?.isActive = !show
-        bannerTopConstraint?.isActive = show
+        bannerTopConstraint?.constant = show ? 0 : bannerVC.view.frame.height * -1
         UIView.springAnimation(duringHandler: {
             self.view.layoutIfNeeded()
         })

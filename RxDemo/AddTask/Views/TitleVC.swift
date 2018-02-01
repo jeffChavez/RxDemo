@@ -13,6 +13,8 @@ class TitleVC: UIViewController, TitleViewStateDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.layer.cornerRadius = 5
+
         titleLabel.textColor = .softBlack()
         bodyLabel.textColor = .softBlack()
         bodyLabel.isEnabled = false

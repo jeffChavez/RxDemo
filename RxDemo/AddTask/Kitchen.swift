@@ -65,22 +65,13 @@ class Kitchen {
         service.tasksFetched().subscribe(onNext: { result in
             switch result {
             case .loading:
-                let addViewState = self.addViewStateFactory.make()
-                self.addViewStateDelegate?.kitchen(didMake: addViewState)
-
-                let tableViewState = self.tableViewStateFactory.makeLoading()
-                self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
-
+                self.titleViewStateDelegate?.kitchen(didMake: titleViewStateFactory.makeLoading())
+                self.addViewStateDelegate?.kitchen(didMake: addViewStateFactory.make())
+                self.tableViewStateDelegate?.kitchen(didMake: tableViewStateFactory.makeLoading())
             case .success(let tasks):
-                let titleViewState = self.titleViewStateFactory.make(with: tasks)
-                self.titleViewStateDelegate?.kitchen(didMake: titleViewState)
-
-                let addViewState = self.addViewStateFactory.make()
-                self.addViewStateDelegate?.kitchen(didMake: addViewState)
-
-                let tableViewState = self.tableViewStateFactory.make(with: tasks)
-                self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
-
+                self.titleViewStateDelegate?.kitchen(didMake: titleViewStateFactory.make(with: tasks))
+                self.addViewStateDelegate?.kitchen(didMake: addViewStateFactory.make())
+                self.tableViewStateDelegate?.kitchen(didMake: tableViewStateFactory.make(with: tasks))
                 self.tasks = tasks
             case .error(_):
                 break
@@ -90,16 +81,9 @@ class Kitchen {
         service.taskTypesFetched().subscribe(onNext: { result in
             switch result {
             case .loading:
-                let titleViewState = self.titleViewStateFactory.makeLoading()
-                self.titleViewStateDelegate?.kitchen(didMake: titleViewState)
-                
-                let typeViewStates = typeViewStateFactory.makeLoading()
-                self.typeViewStateDelegate?.kitchen(didMake: typeViewStates)
-
+                self.typeViewStateDelegate?.kitchen(didMake: typeViewStateFactory.makeLoading())
             case .success(let types):
-                let typeViewStates = typeViewStateFactory.make(with: types)
-                self.typeViewStateDelegate?.kitchen(didMake: typeViewStates)
-
+                self.typeViewStateDelegate?.kitchen(didMake: typeViewStateFactory.make(with: types))
                 self.taskTypes = types
             case .error(_):
                 break
@@ -109,18 +93,11 @@ class Kitchen {
         service.taskCreated().subscribe(onNext: { result in
             switch result {
             case .loading:
-                let addTaskViewState = self.addViewStateFactory.makeLoading()
-                self.addViewStateDelegate?.kitchen(didMake: addTaskViewState)
-
+                self.hideBanner()
+                self.addViewStateDelegate?.kitchen(didMake: addViewStateFactory.makeLoading())
             case .success(_):
-                let viewControllerState = ViewControllerState(showBanner: true)
-                self.viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
-
-                let addTaskViewState = self.addViewStateFactory.make()
-                self.addViewStateDelegate?.kitchen(didMake: addTaskViewState)
-
-                let bannerViewState = self.bannerViewStateFactory.make()
-                self.bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+                self.showCreatedBanner()
+                self.addViewStateDelegate?.kitchen(didMake: addViewStateFactory.make())
             case .error(_):
                 break
             }
@@ -129,17 +106,11 @@ class Kitchen {
         service.taskCompleted().subscribe(onNext: { result in
             switch result {
             case .loading(let selectedTaskID):
-                guard
-                    let selectedTaskID = selectedTaskID,
-                    let tasks = self.tasks
-                else {
-                    return
-                }
-
-                let tableViewState = self.tableViewStateFactory.makeCompleting(with: selectedTaskID, tasks: tasks)
+                self.hideBanner()
+                let tableViewState = tableViewStateFactory.makeCompleting(with: selectedTaskID, tasks: self.tasks)
                 self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
             case .success(_):
-                break
+                self.showCompletedBanner()
             case .error(_):
                 break
             }
@@ -148,17 +119,11 @@ class Kitchen {
         service.taskRemoved().subscribe(onNext: { result in
             switch result {
             case .loading(let selectedTaskID):
-                guard
-                    let selectedTaskID = selectedTaskID,
-                    let tasks = self.tasks
-                else {
-                        return
-                }
-
-                let tableViewState = self.tableViewStateFactory.makeRemoving(with: selectedTaskID, tasks: tasks)
+                self.hideBanner()
+                let tableViewState = tableViewStateFactory.makeRemoving(with: selectedTaskID, tasks: self.tasks)
                 self.tableViewStateDelegate?.kitchen(didMake: tableViewState)
             case .success(_):
-                break
+                self.showRemovedBanner()
             case .error(_):
                 break
             }
@@ -167,25 +132,24 @@ class Kitchen {
 
     // MARK: - Actions
 
-    func fetchTasks() {
+    func fetch() {
         service.fetchTasks()
-    }
-
-    func fetchTaskTypes() {
         service.fetchTaskTypes()
     }
 
     func selectType(with id: String) {
-        selectedTypeID = id
+        hideBanner()
         guard let taskTypes = taskTypes else {
             return
         }
         let viewState = typeViewStateFactory.make(with: taskTypes, selectedTypeID: id)
         typeViewStateDelegate?.kitchen(didMake: viewState)
+        selectedTypeID = id
     }
 
     func createTask() {
         guard let id = selectedTypeID else {
+            showErrorBanner()
             return
         }
         service.createTask(with: id)
@@ -197,6 +161,45 @@ class Kitchen {
 
     func removeTask(with selectedTaskID: String) {
         service.removeTask(with: selectedTaskID)
+    }
+
+    // MARK: - Helpers
+
+    private func showCreatedBanner() {
+        let viewControllerState = ViewControllerState(showBanner: true)
+        viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
+
+        let bannerViewState = bannerViewStateFactory.makeCreated()
+        bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+    }
+
+    private func showCompletedBanner() {
+        let viewControllerState = ViewControllerState(showBanner: true)
+        viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
+
+        let bannerViewState = bannerViewStateFactory.makeCompleted()
+        bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+    }
+
+    private func showRemovedBanner() {
+        let viewControllerState = ViewControllerState(showBanner: true)
+        viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
+
+        let bannerViewState = bannerViewStateFactory.makeRemoved()
+        bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+    }
+
+    private func showErrorBanner() {
+        let viewControllerState = ViewControllerState(showBanner: true)
+        viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
+
+        let bannerViewState = bannerViewStateFactory.makeError()
+        bannerViewStateDelegate?.kitchen(didMake: bannerViewState)
+    }
+
+    private func hideBanner() {
+        let viewControllerState = ViewControllerState(showBanner: false)
+        viewControllerStateDelegate?.kitchen(didMake: viewControllerState)
     }
 
 }
