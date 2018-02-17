@@ -2,19 +2,22 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class TaskVC: UIViewController {
+class TaskCell: UITableViewCell {
 
-    @IBOutlet private weak var containerStackView: UIStackView!
-    @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var title: UILabel!
     @IBOutlet private weak var completeButton: UIButton!
     @IBOutlet private weak var removeButton: UIButton!
-    private let lineView = UIView(frame: .zero)
+    @IBOutlet private weak var lineView: UIView!
 
     private var kitchen: Kitchen!
-    private let disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     deinit {
         print("TaskVC Deinit")
+    }
+
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
     }
 
     func inject(kitchen: Kitchen) {
@@ -22,10 +25,14 @@ class TaskVC: UIViewController {
     }
 
     func configure(with viewState: TaskViewState) {
-        setupLineView()
-        label.text = viewState.text
+        title.text = viewState.text
+        title.textColor = .softBlack()
+        
+        lineView.backgroundColor = .softWhite()
+
         completeButton.setTitle(viewState.completeButtonTitle, for: .normal)
         completeButton.isEnabled = viewState.completedButtonIsEnabled
+
         removeButton.setTitle(viewState.removeButtonTitle, for: .normal)
         removeButton.isEnabled = viewState.removeButtonIsEnabled
 
@@ -37,16 +44,4 @@ class TaskVC: UIViewController {
             self.kitchen.removeTask(with: viewState.id)
         }).disposed(by: disposeBag)
     }
-
-    private func setupLineView() {
-        label.textColor = .softBlack()
-
-        view.addSubview(lineView)
-        lineView.constrainLeading(to: view, constant: 16)
-        lineView.constrainTrailing(to: view, constant: 16)
-        lineView.constrainBottom(to: view)
-        lineView.constrainHeight(constant: 1.5)
-        lineView.backgroundColor = .softWhite()
-    }
-
 }

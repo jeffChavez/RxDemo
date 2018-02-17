@@ -3,6 +3,7 @@ import RxSwift
 
 enum DatabaseError: Error {
     case failedToFetchTasks
+    case failedToFetchTaskIDs
     case failedToFetchTaskTypes
     case failedToCreateTask
     case failedToCompleteTask
@@ -10,6 +11,14 @@ enum DatabaseError: Error {
 }
 
 class Database {
+
+    init() {
+        let task = Task(id: "", name: "New Task", completed: false)
+        let tasks = Array(repeatElement(task, count: 10000)).map { task -> Task in
+            return Task(id: UUID().uuidString, name: task.name, completed: false)
+        }
+        self.tasks = tasks
+    }
 
     private var tasks: [Task] = []
     private var taskTypes: [TaskType] = [
@@ -20,6 +29,13 @@ class Database {
 
     func fetchTasks() -> Single<[Task]> {
         return Single.just(tasks).delay(kDelay, scheduler: MainScheduler.instance)
+    }
+
+    func fetchTaskIDs() -> Single<[String]> {
+        let taskIDs = tasks.map { (task) -> String in
+            return task.id
+        }
+        return Single.just(taskIDs).delay(kDelay, scheduler: MainScheduler.instance)
     }
 
     func fetchTaskTypes() -> Single<[TaskType]> {
@@ -59,5 +75,4 @@ class Database {
         tasks = removedTasksArray
         return Single.just().delay(kDelay, scheduler: MainScheduler.instance)
     }
-
 }

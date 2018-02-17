@@ -55,8 +55,7 @@ class MainAssembly: Assembly {
             kitchen.addViewStateDelegate = addTaskVC
             addTaskVC.inject(kitchen: kitchen)
 
-            let viewFactory = ViewFactory(kitchen: kitchen, storyboard: self.storyboard)
-            let tableView = TaskTableView(kitchen: kitchen, viewFactory: viewFactory)
+            let tableView = TaskTableView(kitchen: kitchen)
             kitchen.tableViewStateDelegate = tableView
 
             kitchen.viewControllerStateDelegate = vc
@@ -77,10 +76,6 @@ class MainAssembly: Assembly {
 
         container.storyboardInitCompleted(BannerVC.self) { (resolver, vc) in
 
-        }
-
-        container.storyboardInitCompleted(TaskVC.self) { (resolver, vc) in
-            
         }
 
         container.register(BannerViewStateFactory.self) { resolver in

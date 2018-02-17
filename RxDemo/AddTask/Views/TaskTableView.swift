@@ -6,22 +6,22 @@ class TaskTableView: UITableView, TableViewStateDelegate, UITableViewDataSource,
     private let emptyLabel = UILabel()
 
     private var kitchen: Kitchen!
-    private var viewFactory: ViewFactory!
     private var viewState: TableViewState?
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    init(kitchen: Kitchen, viewFactory: ViewFactory) {
+    init(kitchen: Kitchen) {
         super.init(frame: .zero, style: .plain)
         self.kitchen = kitchen
-        self.viewFactory = viewFactory
 
-        layer.cornerRadius = 5
         dataSource = self
         delegate = self
-        register(UITableViewCell.self, forCellReuseIdentifier: "CELL")
+        let nib = UINib(nibName: "TaskCell", bundle: nil)
+        register(nib, forCellReuseIdentifier: "CELL")
+
+        layer.cornerRadius = 5
         separatorStyle = .none
 
         setupLabel()
@@ -41,19 +41,33 @@ class TaskTableView: UITableView, TableViewStateDelegate, UITableViewDataSource,
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "CELL")
-        let vc = viewFactory.makeTaskVC()
-        cell.contentView.addSubview(vc.view)
-        vc.view.constrainToAllSides(of: cell.contentView)
-        guard let taskViewState = viewState?.taskViewStates[indexPath.row] else {
-            return cell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CELL", for: indexPath) as? TaskCell else {
+            fatalError("TaskCell not found")
         }
-        vc.configure(with: taskViewState)
+        guard let viewState = viewState?.taskViewStates[indexPath.row] else {
+            fatalError("unable to locate viewState in TaskTableView")
+        }
+        cell.inject(kitchen: kitchen)
+        cell.configure(with: viewState)
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
+    }
+
+    var previousScrollMoment: Date = Date()
+    var previousScrollX: CGFloat = 0
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let d = Date()
+        let y = scrollView.contentOffset.y
+        let elapsed = Date().timeIntervalSince(previousScrollMoment)
+        let distance = (y - previousScrollX)
+        let velocity = (elapsed == 0) ? 0 : fabs(distance / CGFloat(elapsed))
+        previousScrollMoment = d
+        previousScrollX = y
+        print("vel \(velocity)")
     }
 
     // MARK: - Helpers

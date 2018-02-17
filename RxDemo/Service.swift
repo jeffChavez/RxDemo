@@ -15,6 +15,7 @@ class Service {
 
     private let disposeBag = DisposeBag()
     private let tasksFetchedSubject = PublishSubject<Result<[Task]>>()
+    private let taskIDsFetchedSubject = PublishSubject<Result<[String]>>()
     private let tasksTypesFetchedSubject = PublishSubject<Result<[TaskType]>>()
     private let taskCreatedSubject = PublishSubject<Result<Void>>()
     private let taskCompletedSubject = PublishSubject<Result<Void>>()
@@ -35,6 +36,19 @@ class Service {
                 switch event {
                 case .success(let tasks):
                     self.tasksFetchedSubject.onNext(.success(tasks))
+                case .error(let error):
+                    self.handle(error)
+                }
+            }.disposed(by: disposeBag)
+    }
+
+    func fetchTaskIDs() {
+        taskIDsFetchedSubject.onNext(.loading(nil))
+        database.fetchTaskIDs()
+            .subscribe { event in
+                switch event {
+                case .success(let taskIDs):
+                    self.taskIDsFetchedSubject.onNext(.success(taskIDs))
                 case .error(let error):
                     self.handle(error)
                 }
@@ -105,6 +119,10 @@ class Service {
         return tasksFetchedSubject.asObservable()
     }
 
+    func taskIDsFetched() -> Observable<Result<[String]>> {
+        return taskIDsFetchedSubject.asObservable()
+    }
+
     func taskTypesFetched() -> Observable<Result<[TaskType]>> {
         return tasksTypesFetchedSubject.asObservable()
     }
@@ -131,6 +149,8 @@ class Service {
         switch error {
         case .failedToFetchTasks:
             tasksFetchedSubject.onNext(.error(error))
+        case .failedToFetchTaskIDs:
+            taskIDsFetchedSubject.onNext(.error(error))
         case .failedToFetchTaskTypes:
             tasksTypesFetchedSubject.onNext(.error(error))
         case .failedToCreateTask:

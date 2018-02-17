@@ -133,7 +133,7 @@ class Kitchen {
     // MARK: - Actions
 
     func fetch() {
-        service.fetchTasks()
+        service.fetchTaskIDs()
         service.fetchTaskTypes()
     }
 
