@@ -3,7 +3,6 @@ import RxSwift
 
 enum DatabaseError: Error {
     case failedToFetchTasks
-    case failedToFetchTaskIDs
     case failedToFetchTaskTypes
     case failedToCreateTask
     case failedToCompleteTask
@@ -26,16 +25,20 @@ class Database {
         TaskType(id: UUID().uuidString, name: "Gym")
     ]
     private let kDelay = 1.5
+    private let kPageCount = 20
 
-    func fetchTasks() -> Single<[Task]> {
-        return Single.just(tasks).delay(kDelay, scheduler: MainScheduler.instance)
+    func fetchTasks(atPage page: Int) -> Single<[Task]> {
+        let startIndex = page * kPageCount
+        let pageExceedsBounds = (startIndex + kPageCount) > tasks.count
+        if pageExceedsBounds {
+            return Single.error(DatabaseError.failedToFetchTasks)
+        }
+        let pagedArray = Array(tasks[startIndex..<kPageCount])
+        return Single.just(pagedArray).delay(kDelay, scheduler: MainScheduler.instance)
     }
 
-    func fetchTaskIDs() -> Single<[String]> {
-        let taskIDs = tasks.map { (task) -> String in
-            return task.id
-        }
-        return Single.just(taskIDs).delay(kDelay, scheduler: MainScheduler.instance)
+    func fetchTotalTaskCount() -> Single<Int> {
+        return Single.just(tasks.count).delay(kDelay, scheduler: MainScheduler.instance)
     }
 
     func fetchTaskTypes() -> Single<[TaskType]> {

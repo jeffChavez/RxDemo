@@ -37,7 +37,7 @@ class ViewController: UIViewController, ViewControllerStateDelegate {
         containerStackView.addArrangedSubview(taskTableView)
 
         setupBannerVC()
-        kitchen.fetch()
+        kitchen.fetchTaskTypes()
     }
 
     func kitchen(didMake viewState: ViewControllerState) {

@@ -44,6 +44,7 @@ class Kitchen {
     private let tableViewStateFactory: TableViewStateFactory
 
     private var selectedTypeID: String?
+    private var page = 0
     private var tasks: [Task]?
     private var taskTypes: [TaskType]?
 
@@ -68,7 +69,8 @@ class Kitchen {
                 self.titleViewStateDelegate?.kitchen(didMake: titleViewStateFactory.makeLoading())
                 self.addViewStateDelegate?.kitchen(didMake: addViewStateFactory.make())
                 self.tableViewStateDelegate?.kitchen(didMake: tableViewStateFactory.makeLoading())
-            case .success(let tasks):
+            case .success(let taskData):
+                // turn tasks and count into viewState array with first 20 as loaded and rest as loading
                 self.titleViewStateDelegate?.kitchen(didMake: titleViewStateFactory.make(with: tasks))
                 self.addViewStateDelegate?.kitchen(didMake: addViewStateFactory.make())
                 self.tableViewStateDelegate?.kitchen(didMake: tableViewStateFactory.make(with: tasks))
@@ -132,9 +134,12 @@ class Kitchen {
 
     // MARK: - Actions
 
-    func fetch() {
-        service.fetchTaskIDs()
+    func fetchTaskTypes() {
         service.fetchTaskTypes()
+    }
+
+    func fetchTasks() {
+        
     }
 
     func selectType(with id: String) {

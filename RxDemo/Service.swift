@@ -14,8 +14,7 @@ enum ServiceError {
 class Service {
 
     private let disposeBag = DisposeBag()
-    private let tasksFetchedSubject = PublishSubject<Result<[Task]>>()
-    private let taskIDsFetchedSubject = PublishSubject<Result<[String]>>()
+    private let tasksFetchedSubject = PublishSubject<Result<([Task], Int)>>()
     private let tasksTypesFetchedSubject = PublishSubject<Result<[TaskType]>>()
     private let taskCreatedSubject = PublishSubject<Result<Void>>()
     private let taskCompletedSubject = PublishSubject<Result<Void>>()
@@ -29,26 +28,17 @@ class Service {
 
     // MARK: - Actions
 
-    func fetchTasks() {
+    func fetchTasks(atPage page: Int) {
         tasksFetchedSubject.onNext(.loading(nil))
-        database.fetchTasks()
-            .subscribe { event in
-                switch event {
-                case .success(let tasks):
-                    self.tasksFetchedSubject.onNext(.success(tasks))
-                case .error(let error):
-                    self.handle(error)
-                }
-            }.disposed(by: disposeBag)
-    }
 
-    func fetchTaskIDs() {
-        taskIDsFetchedSubject.onNext(.loading(nil))
-        database.fetchTaskIDs()
+        Single.zip(
+                database.fetchTasks(atPage: page),
+                database.fetchTotalTaskCount()
+            )
             .subscribe { event in
                 switch event {
-                case .success(let taskIDs):
-                    self.taskIDsFetchedSubject.onNext(.success(taskIDs))
+                case .success(let taskData):
+                    self.tasksFetchedSubject.onNext(.success(taskData))
                 case .error(let error):
                     self.handle(error)
                 }
@@ -71,12 +61,10 @@ class Service {
     func createTask(with selectedTypeID: String) {
         taskCreatedSubject.onNext(.loading(selectedTypeID))
         database.createTask(with: selectedTypeID)
-            .flatMap { self.database.fetchTasks() }
             .subscribe { event in
                 switch event {
-                case .success(let tasks):
+                case .success:
                     self.taskCreatedSubject.onNext(.success(Void()))
-                    self.tasksFetchedSubject.onNext(.success(tasks))
                 case .error(let error):
                     self.handle(error)
                 }
@@ -86,12 +74,10 @@ class Service {
     func completeTask(with selectedTaskID: String) {
         taskCompletedSubject.onNext(.loading(selectedTaskID))
         database.completeTask(with: selectedTaskID)
-            .flatMap { self.database.fetchTasks() }
             .subscribe { event in
                 switch event {
-                case .success(let tasks):
+                case .success:
                     self.taskCompletedSubject.onNext(.success(Void()))
-                    self.tasksFetchedSubject.onNext(.success(tasks))
                 case .error(let error):
                     self.handle(error)
                 }
@@ -101,12 +87,10 @@ class Service {
     func removeTask(with selectedTaskID: String) {
         taskRemovedSubject.onNext(.loading(selectedTaskID))
         database.removeTask(with: selectedTaskID)
-            .flatMap { self.database.fetchTasks() }
             .subscribe { event in
                 switch event {
-                case .success(let tasks):
+                case .success:
                     self.taskRemovedSubject.onNext(.success(Void()))
-                    self.tasksFetchedSubject.onNext(.success(tasks))
                 case .error(let error):
                     self.handle(error)
                 }
@@ -115,12 +99,8 @@ class Service {
 
     // MARK: - Observables
 
-    func tasksFetched() -> Observable<Result<[Task]>> {
+    func tasksFetched() -> Observable<Result<([Task], Int)>> {
         return tasksFetchedSubject.asObservable()
-    }
-
-    func taskIDsFetched() -> Observable<Result<[String]>> {
-        return taskIDsFetchedSubject.asObservable()
     }
 
     func taskTypesFetched() -> Observable<Result<[TaskType]>> {
@@ -149,8 +129,6 @@ class Service {
         switch error {
         case .failedToFetchTasks:
             tasksFetchedSubject.onNext(.error(error))
-        case .failedToFetchTaskIDs:
-            taskIDsFetchedSubject.onNext(.error(error))
         case .failedToFetchTaskTypes:
             tasksTypesFetchedSubject.onNext(.error(error))
         case .failedToCreateTask:
