@@ -71,10 +71,10 @@ class Kitchen {
                 self.tableViewStateDelegate?.kitchen(didMake: tableViewStateFactory.makeLoading())
             case .success(let taskData):
                 // turn tasks and count into viewState array with first 20 as loaded and rest as loading
-                self.titleViewStateDelegate?.kitchen(didMake: titleViewStateFactory.make(with: tasks))
+                self.titleViewStateDelegate?.kitchen(didMake: titleViewStateFactory.make(with: taskData.tasks))
                 self.addViewStateDelegate?.kitchen(didMake: addViewStateFactory.make())
-                self.tableViewStateDelegate?.kitchen(didMake: tableViewStateFactory.make(with: tasks))
-                self.tasks = tasks
+                self.tableViewStateDelegate?.kitchen(didMake: tableViewStateFactory.make(with: taskData.tasks))
+                self.tasks = taskData.tasks
             case .error(_):
                 break
             }
@@ -139,7 +139,7 @@ class Kitchen {
     }
 
     func fetchTasks() {
-        
+        service.fetchTasks(atPage: 0)
     }
 
     func selectType(with id: String) {

@@ -37,6 +37,7 @@ class ViewController: UIViewController, ViewControllerStateDelegate {
         containerStackView.addArrangedSubview(taskTableView)
 
         setupBannerVC()
+        kitchen.fetchTasks()
         kitchen.fetchTaskTypes()
     }
 

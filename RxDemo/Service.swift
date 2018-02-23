@@ -14,7 +14,7 @@ enum ServiceError {
 class Service {
 
     private let disposeBag = DisposeBag()
-    private let tasksFetchedSubject = PublishSubject<Result<([Task], Int)>>()
+    private let tasksFetchedSubject = PublishSubject<Result<(tasks: [Task], count: Int)>>()
     private let tasksTypesFetchedSubject = PublishSubject<Result<[TaskType]>>()
     private let taskCreatedSubject = PublishSubject<Result<Void>>()
     private let taskCompletedSubject = PublishSubject<Result<Void>>()
@@ -99,7 +99,7 @@ class Service {
 
     // MARK: - Observables
 
-    func tasksFetched() -> Observable<Result<([Task], Int)>> {
+    func tasksFetched() -> Observable<Result<(tasks: [Task], count: Int)>> {
         return tasksFetchedSubject.asObservable()
     }
 
