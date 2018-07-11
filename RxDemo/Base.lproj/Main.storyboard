@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,24 +17,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I6q-Ec-gmZ">
-                                <rect key="frame" x="0.0" y="333" width="375" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAh-AF-w4n" userLabel="Card View">
+                                <rect key="frame" x="8" y="325" width="359" height="36"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="PyH-dN-3Sf" userLabel="Container">
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="36"/>
+                                        <subviews>
+                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Ycd-8V-f6h">
+                                                <rect key="frame" x="8" y="8" width="20" height="20"/>
+                                            </activityIndicatorView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I6q-Ec-gmZ">
+                                                <rect key="frame" x="36" y="8" width="315" height="20"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="PyH-dN-3Sf" secondAttribute="bottom" id="1Z7-8W-qKQ"/>
+                                    <constraint firstItem="PyH-dN-3Sf" firstAttribute="leading" secondItem="QAh-AF-w4n" secondAttribute="leading" id="oNo-S2-ePo"/>
+                                    <constraint firstItem="PyH-dN-3Sf" firstAttribute="top" secondItem="QAh-AF-w4n" secondAttribute="top" id="wmx-Lk-oRi"/>
+                                    <constraint firstAttribute="trailing" secondItem="PyH-dN-3Sf" secondAttribute="trailing" id="yFd-9P-TKe"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.95038052871580914" green="0.94482274784612597" blue="0.9559383095854922" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstItem="I6q-Ec-gmZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="d1S-Vt-7lh"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="I6q-Ec-gmZ" secondAttribute="trailing" id="gnC-7v-TQH"/>
-                            <constraint firstItem="I6q-Ec-gmZ" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="lfb-8f-dd1"/>
-                            <constraint firstItem="I6q-Ec-gmZ" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="nTp-jM-xNK"/>
+                            <constraint firstItem="QAh-AF-w4n" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="0nF-5N-rON"/>
+                            <constraint firstItem="QAh-AF-w4n" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="A7g-wC-vFe"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="QAh-AF-w4n" secondAttribute="trailing" constant="8" id="XNT-y9-NjW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="label" destination="I6q-Ec-gmZ" id="7X8-hD-iLi"/>
+                        <outlet property="spinner" destination="Ycd-8V-f6h" id="fgJ-tZ-zXP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

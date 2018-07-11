@@ -2,13 +2,10 @@ import Foundation
 
 struct User {
     let name: String
-    let hasTasks: Bool
+    let messageCount: Int
 }
 
 struct ViewState {
     let labelText: String
-
-    static func loading() -> ViewState {
-        return ViewState(labelText: "Loading...")
-    }
+    let spinnerIsHidden: Bool
 }

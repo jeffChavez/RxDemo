@@ -1,75 +1,76 @@
 import UIKit
-import RxSwift
-import MBProgressHUD
+import BrightFutures
 
-enum AppError: String, Error {
-    case badNetwork = "Something went wrong"
-}
 
 class Service {
 
-    deinit {
-        print("Service deinit")
+    func fetchUser() -> Future<User, AppError> {
+        let user = User(name: "Jeff", messageCount: 3)
+        return Future(value: user).delay(DispatchTimeInterval.seconds(2))
     }
 
-    func fetchUser() -> Observable<User> {
-        let error = false
-        guard !error else {
-            return Observable.error(AppError.badNetwork).delay(1.5, scheduler: MainScheduler.instance)
-        }
-        let user = User(name: "Jeff", hasTasks: true)
-        return Observable.just(user).delay(1.5, scheduler: MainScheduler.instance)
-    }
+}
 
-    func fetchTasks(for user: User) -> Observable<Int> {
-        return Observable.just(3).delay(1.5, scheduler: MainScheduler.instance)
-    }
-
+protocol KitchenDelegate {
+    func perform(command: Kitchen.Command)
 }
 
 class Kitchen {
 
-    deinit {
-        print("Kitchen deinit")
-    }
-
+    weak var delegate: ViewController?
     private let service = Service()
 
-    func viewState() -> Observable<ViewState> {
-        return service.fetchUser()
-            .map { user -> ViewState in
-                let text = "Hello, " + user.name + "."
-                let viewState = ViewState(labelText: text)
-                return viewState
-            }
-            .catchError { e -> Observable<ViewState> in
-                guard let error = e as? AppError else {
-                    fatalError("")
+    enum ViewEvent {
+        case viewDidLoad
+    }
+
+    enum Command {
+        case load(ViewState)
+    }
+
+    func receive(event: ViewEvent) {
+        switch event {
+        case .viewDidLoad:
+
+            let loadingViewState = ViewState(labelText: "Loading", spinnerIsHidden: false)
+            delegate?.perform(command: .load(loadingViewState))
+            service.fetchUser().onSuccess { (user) in
+                let text: String
+                switch user.messageCount {
+                case 0:
+                    text = "Hello, \(user.name), you have no new messages"
+                case 1:
+                    text = "Hello, \(user.name), you have \(user.messageCount) new message"
+                default:
+                    text = "Hello, \(user.name), you have \(user.messageCount) new messages"
                 }
-                let viewState = ViewState(labelText: error.rawValue)
-                return Observable.just(viewState)
+                let viewState = ViewState(labelText: text, spinnerIsHidden: true)
+                self.delegate?.perform(command: .load(viewState))
             }
-            .startWith(ViewState.loading())
+        }
     }
 }
 
-class ViewController: UIViewController {
-
-    deinit {
-        print("ViewController deinit")
-    }
+class ViewController: UIViewController, KitchenDelegate {
 
     @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var spinner: UIActivityIndicatorView!
 
     private let kitchen = Kitchen()
-    private let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        kitchen.viewState().subscribe(onNext: { viewState in
-            self.label.text = viewState.labelText
-        }).addDisposableTo(disposeBag)
+        kitchen.delegate = self
+        kitchen.receive(event: .viewDidLoad)
+    }
+
+    func perform(command: Kitchen.Command) {
+        switch command {
+        case .load(let viewState):
+            label.text = viewState.labelText
+            spinner.isHidden = viewState.spinnerIsHidden
+        }
     }
 
 }
