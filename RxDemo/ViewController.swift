@@ -31,9 +31,9 @@ class Kitchen {
     func receive(event: ViewEvent) {
         switch event {
         case .viewDidLoad:
-
             let loadingViewState = ViewState(labelText: "Loading", spinnerIsHidden: false)
             delegate?.perform(command: .load(loadingViewState))
+
             service.fetchUser().onSuccess { (user) in
                 let text: String
                 switch user.messageCount {
