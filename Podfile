@@ -4,9 +4,9 @@ use_frameworks!
 
 target 'RxDemo' do
     pod 'RxSwift'
-    pod 'MBProgressHUD'
     pod 'RxCocoa'
     pod 'Swinject'
+    pod 'BrightFutures'
 
     target 'RxDemoTests' do
 
