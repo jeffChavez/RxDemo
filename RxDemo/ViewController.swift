@@ -34,7 +34,7 @@ class Kitchen {
             let loadingViewState = ViewState(labelText: "Loading", spinnerIsHidden: false)
             delegate?.perform(command: .load(loadingViewState))
 
-            service.fetchUser().onSuccess { (user) in
+            service.fetchUser().onSuccess { [weak self] (user) in
                 let text: String
                 switch user.messageCount {
                 case 0:
@@ -45,7 +45,7 @@ class Kitchen {
                     text = "Hello, \(user.name), you have \(user.messageCount) new messages"
                 }
                 let viewState = ViewState(labelText: text, spinnerIsHidden: true)
-                self.delegate?.perform(command: .load(viewState))
+                self?.delegate?.perform(command: .load(viewState))
             }
         }
     }
