@@ -1,25 +1,17 @@
 import UIKit
 import BrightFutures
 
-
 class Service {
-
     func fetchUser() -> Future<User, AppError> {
-        let user = User(name: "Jeff", messageCount: 3)
+        let user = User(name: "Jeff", messageCount: 1)
         return Future(value: user).delay(DispatchTimeInterval.seconds(2))
     }
-
 }
 
-protocol KitchenDelegate {
+protocol KitchenDelegate: class {
     func perform(command: Kitchen.Command)
 }
-
 class Kitchen {
-
-    weak var delegate: ViewController?
-    private let service = Service()
-
     enum ViewEvent {
         case viewDidLoad
     }
@@ -28,19 +20,22 @@ class Kitchen {
         case load(ViewState)
     }
 
+    private let service = Service()
+    weak var delegate: KitchenDelegate?
+
     func receive(event: ViewEvent) {
         switch event {
         case .viewDidLoad:
-            let loadingViewState = ViewState(labelText: "Loading", spinnerIsHidden: false)
-            delegate?.perform(command: .load(loadingViewState))
 
-            service.fetchUser().onSuccess { [weak self] (user) in
+            let viewState = ViewState(labelText: "Loading", spinnerIsHidden: false)
+            delegate?.perform(command: .load(viewState))
+            service.fetchUser().onSuccess { [weak self] user in
                 let text: String
                 switch user.messageCount {
                 case 0:
                     text = "Hello, \(user.name), you have no new messages"
                 case 1:
-                    text = "Hello, \(user.name), you have \(user.messageCount) new message"
+                    text = "Hello, \(user.name), you have a new message"
                 default:
                     text = "Hello, \(user.name), you have \(user.messageCount) new messages"
                 }
