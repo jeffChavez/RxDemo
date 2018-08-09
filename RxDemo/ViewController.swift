@@ -19,63 +19,58 @@ class Kitchen {
 
     weak var delegate: KitchenDelegate?
 
-    private let disposeBag = DisposeBag()
-    private let viewDidLoadSubject = PublishSubject<Void>()
-    private let addSubject = PublishSubject<Void>()
-    private let subtractSubject = PublishSubject<Void>()
+    private var count = 0
 
     func receive(event: ViewEvent) {
         switch event {
         case .configure(let startingCount):
-            setupSubscriptions(startingCount)
+            count = startingCount
         case .viewDidLoad:
-            viewDidLoadSubject.onNext()
+            sendViewState()
         case .didTapAddButton:
-            addSubject.onNext()
+            increaseCount()
         case .didTapSubtractButton:
-            subtractSubject.onNext()
+            decreaseCount()
         }
     }
 
-    private func setupSubscriptions(_ startingCount: Int) {
-        let addObs = addSubject.map { 1 }
-        let subtractObs = subtractSubject.map { -1 }
-        let countObs = Observable.merge(addObs, subtractObs)
-            .scan(startingCount) { (lastOutput, count) -> Int in
-                let newOutput = lastOutput + count
-                if newOutput < 0 {
-                    return 0
-                }
+    private func increaseCount() {
+        count += 1
+        sendViewState()
+    }
 
-                if newOutput > 10 {
-                    return 10
-                }
-                return newOutput
-            }
-            .startWith(startingCount)
+    private func decreaseCount() {
+        count -= 1
+        sendViewState()
+    }
 
-        Observable.combineLatest(viewDidLoadSubject, countObs)
-            .subscribe(onNext: { (_, count) in
-                let text: String
-                switch count {
-                case 0:
-                    text = "You have no new messages"
-                case 1:
-                    text = "You have a new message"
-                case 10:
-                    text = "You have too many messages!"
-                default:
-                    text = "You have \(count) new messages"
-                }
-                let viewState = ViewState(
-                    labelText: text,
-                    addButtonTitle: "+",
-                    subtractButtonTitle: "-",
-                    spinnerIsHidden: true
-                )
-                self.delegate?.perform(command: .load(viewState))
-            })
-            .disposed(by: disposeBag)
+    private func sendViewState() {
+        if count < 0 {
+            count = 0
+        }
+
+        if count > 10 {
+            count = 10
+        }
+
+        let text: String
+        switch count {
+        case 0:
+            text = "You have no new messages"
+        case 1:
+            text = "You have a new message"
+        case 10:
+            text = "You have too many messages!"
+        default:
+            text = "You have \(count) new messages"
+        }
+        let viewState = ViewState(
+            labelText: text,
+            addButtonTitle: "+",
+            subtractButtonTitle: "-",
+            spinnerIsHidden: true
+        )
+        self.delegate?.perform(command: .load(viewState))
     }
 }
 
