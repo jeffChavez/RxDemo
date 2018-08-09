@@ -1,47 +1,82 @@
 import UIKit
 import BrightFutures
-
-class Service {
-    func fetchUser() -> Future<User, AppError> {
-        let user = User(name: "Jeff", messageCount: 1)
-        return Future(value: user).delay(DispatchTimeInterval.seconds(2))
-    }
-}
+import RxSwift
 
 protocol KitchenDelegate: class {
     func perform(command: Kitchen.Command)
 }
 class Kitchen {
     enum ViewEvent {
+        case configure(Int)
         case viewDidLoad
+        case didTapAddButton
+        case didTapSubtractButton
     }
 
     enum Command {
         case load(ViewState)
     }
 
-    private let service = Service()
     weak var delegate: KitchenDelegate?
+
+    private let disposeBag = DisposeBag()
+    private let viewDidLoadSubject = PublishSubject<Void>()
+    private let addSubject = PublishSubject<Void>()
+    private let subtractSubject = PublishSubject<Void>()
 
     func receive(event: ViewEvent) {
         switch event {
-        case .viewDidLoad:
+        case .configure(let startingCount):
+            let countObs = Observable
+                .merge(
+                    addSubject.map { 1 },
+                    subtractSubject.map { -1 }
+                )
+                .scan(startingCount) { (lastOutput, count) -> Int in
+                    let newOutput = lastOutput + count
+                    if newOutput < 0 {
+                        return 0
+                    }
 
-            let viewState = ViewState(labelText: "Loading", spinnerIsHidden: false)
-            delegate?.perform(command: .load(viewState))
-            service.fetchUser().onSuccess { [weak self] user in
-                let text: String
-                switch user.messageCount {
-                case 0:
-                    text = "Hello, \(user.name), you have no new messages"
-                case 1:
-                    text = "Hello, \(user.name), you have a new message"
-                default:
-                    text = "Hello, \(user.name), you have \(user.messageCount) new messages"
+                    if newOutput > 10 {
+                        return 10
+                    }
+                    return newOutput
                 }
-                let viewState = ViewState(labelText: text, spinnerIsHidden: true)
-                self?.delegate?.perform(command: .load(viewState))
-            }
+                .startWith(startingCount)
+
+            Observable
+                .combineLatest(
+                    viewDidLoadSubject,
+                    countObs
+                )
+                .subscribe(onNext: { (_, count) in
+                    let text: String
+                    switch count {
+                    case 0:
+                        text = "You have no new messages"
+                    case 1:
+                        text = "You have a new message"
+                    case 10:
+                        text = "You have too many messages!"
+                    default:
+                        text = "You have \(count) new messages"
+                    }
+                    let viewState = ViewState(
+                        labelText: text,
+                        addButtonTitle: "+",
+                        subtractButtonTitle: "-",
+                        spinnerIsHidden: true
+                    )
+                    self.delegate?.perform(command: .load(viewState))
+                })
+                .disposed(by: disposeBag)
+        case .viewDidLoad:
+            viewDidLoadSubject.onNext()
+        case .didTapAddButton:
+            addSubject.onNext()
+        case .didTapSubtractButton:
+            subtractSubject.onNext()
         }
     }
 }
@@ -49,7 +84,8 @@ class Kitchen {
 class ViewController: UIViewController, KitchenDelegate {
 
     @IBOutlet private weak var label: UILabel!
-    @IBOutlet private weak var spinner: UIActivityIndicatorView!
+    @IBOutlet private weak var addButton: UIButton!
+    @IBOutlet private weak var subtractButton: UIButton!
 
     private let kitchen = Kitchen()
 
@@ -57,6 +93,7 @@ class ViewController: UIViewController, KitchenDelegate {
         super.viewDidLoad()
 
         kitchen.delegate = self
+        kitchen.receive(event: .configure(10))
         kitchen.receive(event: .viewDidLoad)
     }
 
@@ -64,8 +101,18 @@ class ViewController: UIViewController, KitchenDelegate {
         switch command {
         case .load(let viewState):
             label.text = viewState.labelText
-            spinner.isHidden = viewState.spinnerIsHidden
+            addButton.setTitle(viewState.addButtonTitle, for: .normal)
+            subtractButton.setTitle(viewState.subtractButtonTitle, for: .normal)
         }
     }
 
+    @IBAction func didTapAddButton() {
+        kitchen.receive(event: .didTapAddButton)
+    }
+
+    @IBAction func didTapSubtractButton() {
+        kitchen.receive(event: .didTapSubtractButton)
+    }
+
 }
+

@@ -7,5 +7,7 @@ struct User {
 
 struct ViewState {
     let labelText: String
+    let addButtonTitle: String
+    let subtractButtonTitle: String
     let spinnerIsHidden: Bool
 }
